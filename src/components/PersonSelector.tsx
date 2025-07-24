@@ -50,7 +50,7 @@ export default function PersonSelector({ value, onChange }: PersonSelectorProps)
   useEffect(() => {
     onChange(counts);
     const display = Object.entries(counts)
-      .filter(([key, value]) => value > 0)
+      .filter(([, value]) => value > 0)
       .map(([key, value]) => {
         const groupKey = key as Groupkey;
         return `${value} ${displayLabel[groupKey] || key}`

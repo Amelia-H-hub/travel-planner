@@ -1,5 +1,4 @@
 import homePageBg from '../assets/homePage.jpg';
-import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form';
 import Flatpickr from 'react-flatpickr';
 import "flatpickr/dist/themes/airbnb.css";
@@ -9,16 +8,13 @@ import { ArrowBigRightDash } from 'lucide-react';
 
 export default function HomePage() {
 
-  const { control, register, handleSubmit, formState: { errors }} = useForm({
+  const { control, handleSubmit} = useForm({
     defaultValues: {
       city: "",
       dateRange: [],
       people: ""
     }
   });
-
-  const [dateRange, setDateRange] = useState([])
-  const [endDate, setEndDate] = useState("")
 
   const onSubmit = (data: any) => {
     console.log('React FormEvent==========', data);
@@ -79,41 +75,30 @@ export default function HomePage() {
                   control={control}
                   name="dateRange"
                   rules={{ required: true }}
-                  render = {({field}) => (
-                    <Flatpickr
-                      {...field}
-                      id = "dateRange"
-                      options={{
-                        mode: "range",
-                        dateFormat: "Y-m-d",
-                        closeOnSelect: false,
-                      }}
-                      onClose={(selectedDates) => {
-                        console.log("onClose:", selectedDates);
-                      }}
-                      placeholder="YYYY-MM-DD"
-                      className="bg-white w-full text-[#3C3C3C] px-6 py-5 rounded-lg"
+                  render = {({field}) => {
+                    const { onChange, onBlur, value, ref } = field;
+                    return (
+                      <Flatpickr
+                        id="dateRange"
+                        options={{
+                          mode: "range",
+                          dateFormat: "Y-m-d",
+                          closeOnSelect: false,
+                        }}
+                        value={value}
+                        onClose={(selectedDates) => {
+                          onChange(selectedDates);
+                        }}
+                        onBlur={onBlur}
+                        placeholder="YYYY-MM-DD"
+                        className="bg-white w-full text-[#3C3C3C] px-6 py-5 rounded-lg"
+                        ref={ref}
                     />
-                  )}
+                    )
+                  }}
                 >
                 </Controller>
               </div>
-              {/* <div className="flex flex-wrap justify-start w-1/3 relative">
-                <label htmlFor="endDate" className="w-full mb-2 text-left text-[#020f14]">
-                  Return Date
-                </label>
-                <Flatpickr
-                  value={endDate}
-                  id = "endDate"
-                  name="endDate"
-                  onChange={(selectedDate: any) => setEndDate(selectedDate)}
-                  className="bg-white w-full text-[#3C3C3C] px-6 py-5 rounded-lg"
-                  options={{
-                    dateFormat: "Y-m-d",
-                  }}
-                  placeholder="YYYY-MM-DD"
-                />
-              </div> */}
               <div className="flex flex-wrap justify-start w-1/3">
                 <label htmlFor="people" className="w-full mb-2 text-left text-[#020f14]">
                   Number of People by Age
