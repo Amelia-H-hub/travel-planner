@@ -1,6 +1,4 @@
-import { Link } from "react-router-dom"; 
 import navIcon from "../assets/navIcon.png"
-import navIconWhite from "../assets/navIcon_white.png"
 
 export default function NavBar() {
   return (
