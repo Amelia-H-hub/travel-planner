@@ -6,11 +6,15 @@ from backend import models
 
 app = FastAPI()
 
+origins = [
+    "http://localhost:5173",
+]
+
 # Allow frontend request from different netword
 app.add_middleware(
   CORSMiddleware,
   allow_origins=["*"],
-  allow_credentials=True,
+  allow_credentials=False,
   allow_methods=["*"],
   allow_headers=["*"],
 )

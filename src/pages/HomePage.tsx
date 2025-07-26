@@ -5,6 +5,7 @@ import "flatpickr/dist/themes/airbnb.css";
 import AutoComplete from '../components/AutoComplete';
 import PersonSelector from '../components/PersonSelector';
 import { ArrowBigRightDash } from 'lucide-react';
+import { useEffect, useState } from "react";
 
 export default function HomePage() {
 
@@ -15,6 +16,22 @@ export default function HomePage() {
       people: ""
     }
   });
+
+  const [dbTime, setDbTime] = useState<string | null>(null);
+
+  useEffect(() => {
+    const test_db = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/home/");
+        const data = await res.json();
+        setDbTime(data.db_time);
+      } catch (err) {
+        console.error("Failed to fetch DB time:", err);
+      }
+    };
+
+    test_db();
+  }, []);
 
   const onSubmit = (data: any) => {
     console.log('React FormEvent==========', data);
@@ -44,7 +61,7 @@ export default function HomePage() {
       <div className="absolute inset-0 bg-black/35"></div>
       <div className="relative z-10 top-50 px-20">
         <div className="text-white text-[36px] mb-4 font-black">
-          Let The Journey Begin
+          Let The Journey Begin {dbTime ? dbTime : "..."}
         </div>
         <form onSubmit={handleSubmit(onSubmit, onError)} className="bg-[#F0F0F0]/60 py-10 px-16 rounded-2xl shadow-3xl backdrop-blur-md">
           <div>

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from backend.database import SessionLocal
 from backend import models
 
@@ -17,8 +18,9 @@ def get_db():
     db.close()
 
 @router.get("/")
-def hello():
-  return {"message": "Hello from home router!"}
+def read_root(db: Session = Depends(get_db)):
+    result = db.execute(text("SELECT now()")).fetchone()
+    return {"db_time": result[0]}
 
 @router.post("/cities")
 def get_cities(value: CityRequest, db: Session = Depends(get_db)):
