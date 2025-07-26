@@ -6,3 +6,5 @@ uvicorn[standard]
 pydantic
 python-dotenv
 sqlalchemy
+requests
+supabase
