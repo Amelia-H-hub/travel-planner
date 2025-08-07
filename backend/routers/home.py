@@ -4,6 +4,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from backend.database import SessionLocal
 from backend import models
+import httpx
+from httpx import HTTPStatusError
+from backend.supabase_config import SUPABASE_URL, DEFAULT_HEADERS
+from urllib.parse import quote
 
 router = APIRouter(prefix="/api/home", tags=["Home"])
 
@@ -17,12 +21,45 @@ def get_db():
   finally:
     db.close()
 
-@router.get("/")
-def read_root(db: Session = Depends(get_db)):
-    result = db.execute(text("SELECT now()")).fetchone()
-    return {"db_time": result[0]}
-
 @router.post("/cities")
-def get_cities(value: CityRequest, db: Session = Depends(get_db)):
-  filtered_cities = db.query(models.City).filter(models.City.name.ilike(f"{value.keyword}%")).limit(20).all()
-  return { "cities": [ { "city": city.name, "admin1_name": city.admin1_name, "country": city.country_name } for city in filtered_cities]}
+async def get_cities(value: CityRequest):
+  # Validate the keyword
+  keyword = value.keyword.strip()
+  if not keyword or len(keyword) < 2:
+    return { "error": "Please provide a keyword at least two characters long." }
+  
+  async with httpx.AsyncClient() as client:
+    # Encode the keyword for URL, since it contain % character
+    keyword_encoded = quote(f"{value.keyword}%")
+
+    try:
+      res = await client.get(
+        f"{SUPABASE_URL}/rest/v1/cities",
+        headers=DEFAULT_HEADERS,
+        params={
+          "name": f"ilike.{keyword_encoded}",
+          "limit": "20"
+        }
+      )
+
+      # Throw a HTTPStatusError if the response status >= 400
+      res.raise_for_status()
+
+      return { 
+        "cities": [
+          { 
+            "city": city["name"],
+            "admin1_name": city["admin1_name"],
+            "country": city["country_name"]
+          }
+          for city in res.json()
+        ]
+      }
+    
+    except HTTPStatusError as e:
+      print(f"HTTP error occurred: {e}")
+      return { "error": f"Error fetching cities: {e.response.text}" }
+    
+    except Exception as e:
+      print(f"Other error occurred: {e}")
+      return { "error": "Unexpected error occurred." }

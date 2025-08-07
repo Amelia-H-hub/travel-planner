@@ -66,7 +66,7 @@ export default function AutoComplete({
       >
       </input>
       {filteredSuggestions.length > 0 && (
-        <ul className="absolute z-10 max-h-[250px] overflow-scroll bg-white border border-gray-200 w-full rounded mt-1 shadow">
+        <ul className="absolute z-10 max-h-[250px] overflow-y-scroll bg-white border border-gray-200 w-full rounded mt-1 shadow">
           {filteredSuggestions.map((item, index) => (
             <li
               key={index}
