@@ -29,7 +29,13 @@ async def get_cities(value: CityRequest):
 
   async with httpx.AsyncClient() as client:
     # Encode the keyword for URL, since it contain % character
-    keyword_encoded = quote(f"{value.keyword}%")
+    keyword_encoded = quote(f"%{value.keyword}%")
+
+    params={
+      "name": f"ilike.{keyword_encoded}",
+      "limit": "20"
+    }
+    print(f"Requesting cities with params: {params}")
 
     try:
       res = await client.get(
