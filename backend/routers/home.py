@@ -1,9 +1,5 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from sqlalchemy.orm import Session
-from sqlalchemy import text
-from backend.database import SessionLocal
-from backend import models
 import httpx
 from httpx import HTTPStatusError
 from backend.supabase_config import SUPABASE_URL, DEFAULT_HEADERS
@@ -13,13 +9,6 @@ router = APIRouter(prefix="/api/home", tags=["Home"])
 
 class CityRequest(BaseModel):
   keyword: str
-
-def get_db():
-  db = SessionLocal()
-  try:
-    yield db
-  finally:
-    db.close()
 
 @router.post("/cities")
 async def get_cities(value: CityRequest):
