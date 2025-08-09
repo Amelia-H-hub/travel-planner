@@ -32,7 +32,7 @@ async def get_cities(value: CityRequest):
     keyword_encoded = quote(f"%{value.keyword}%")
 
     params={
-      "name": f"ilike.{keyword_encoded}",
+      "name": f"ilike.{value.keyword}%",
       "limit": "20"
     }
     print(f"Requesting cities with params: {params}")
@@ -42,7 +42,7 @@ async def get_cities(value: CityRequest):
         f"{SUPABASE_URL}/rest/v1/cities",
         headers=DEFAULT_HEADERS,
         params={
-          "name": f"ilike.{keyword_encoded}",
+          "name": f"ilike.{value.keyword}%",
           "limit": "20"
         }
       )
