@@ -4,6 +4,7 @@ import httpx
 from httpx import HTTPStatusError
 from backend.supabase_config import SUPABASE_URL, DEFAULT_HEADERS
 from urllib.parse import quote
+import os
 
 router = APIRouter(prefix="/api/home", tags=["Home"])
 
@@ -19,8 +20,6 @@ masked_apikey = mask_key(DEFAULT_HEADERS["apikey"])
 
 @router.post("/cities")
 async def get_cities(value: CityRequest):
-  print(f"SUPABASE_URL: {SUPABASE_URL}")
-  print(f"DEFAULT_HEADERS: {{'apikey': '{masked_apikey}', 'Authorization': 'Bearer {masked_apikey}', 'Content-Type': 'application/json'}}")
 
   # Validate the keyword
   keyword = value.keyword.strip()
@@ -28,17 +27,24 @@ async def get_cities(value: CityRequest):
     return { "error": "Please provide a keyword at least two characters long." }
 
   async with httpx.AsyncClient() as client:
-    # Encode the keyword for URL, since it contain % character
-    keyword_encoded = quote(f"{value.keyword}%")
+    is_local = os.getenv("ENV") == "local"
+    params={
+      "name": f"ilike.{value.keyword}%",
+      "limit": "20"
+    }
+    if is_local:
+      # Encode the keyword for URL, since it contain % character
+      keyword_encoded = quote(f"{value.keyword}%")
+      params={
+        "name": f"ilike.{keyword_encoded}",
+        "limit": "20"
+      }
 
     try:
       res = await client.get(
         f"{SUPABASE_URL}/rest/v1/cities",
         headers=DEFAULT_HEADERS,
-        params={
-          "name": f"ilike.{keyword_encoded}",
-          "limit": "20"
-        }
+        params=params
       )
 
       # Throw a HTTPStatusError if the response status >= 400
