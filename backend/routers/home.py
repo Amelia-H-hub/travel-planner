@@ -10,8 +10,18 @@ router = APIRouter(prefix="/api/home", tags=["Home"])
 class CityRequest(BaseModel):
   keyword: str
 
+def mask_key(key: str) -> str:
+    if not key or len(key) < 8:
+        return "****"
+    return key[:4] + "****" + key[-4:]
+
+masked_apikey = mask_key(DEFAULT_HEADERS["apikey"])
+
 @router.post("/cities")
 async def get_cities(value: CityRequest):
+  print(f"SUPABASE_URL: {SUPABASE_URL}")
+  print(f"DEFAULT_HEADERS: {{'apikey': '{masked_apikey}', 'Authorization': 'Bearer {masked_apikey}', 'Content-Type': 'application/json'}}")
+
   # Validate the keyword
   keyword = value.keyword.strip()
   if not keyword or len(keyword) < 2:
@@ -30,8 +40,6 @@ async def get_cities(value: CityRequest):
           "limit": "20"
         }
       )
-      print(f"Searching for cities res: {res}")
-
 
       # Throw a HTTPStatusError if the response status >= 400
       res.raise_for_status()
