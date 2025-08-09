@@ -20,7 +20,7 @@ async def get_cities(value: CityRequest):
   async with httpx.AsyncClient() as client:
     # Encode the keyword for URL, since it contain % character
     keyword_encoded = quote(f"{value.keyword}%")
-    print(f"Searching for cities with keyword: {keyword_encoded}")
+
     try:
       res = await client.get(
         f"{SUPABASE_URL}/rest/v1/cities",
@@ -30,6 +30,8 @@ async def get_cities(value: CityRequest):
           "limit": "20"
         }
       )
+      print(f"Searching for cities res: {res}")
+
 
       # Throw a HTTPStatusError if the response status >= 400
       res.raise_for_status()
