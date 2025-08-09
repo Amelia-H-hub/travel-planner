@@ -16,11 +16,11 @@ async def get_cities(value: CityRequest):
   keyword = value.keyword.strip()
   if not keyword or len(keyword) < 2:
     return { "error": "Please provide a keyword at least two characters long." }
-  
+
   async with httpx.AsyncClient() as client:
     # Encode the keyword for URL, since it contain % character
     keyword_encoded = quote(f"{value.keyword}%")
-
+    print(f"Searching for cities with keyword: {keyword_encoded}")
     try:
       res = await client.get(
         f"{SUPABASE_URL}/rest/v1/cities",
