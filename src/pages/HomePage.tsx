@@ -25,7 +25,7 @@ export default function HomePage() {
 };
 
   const searchCities = async (input: string) => {
-    const res = await fetch("http://localhost:8000/api/home/cities", {
+    const res = await fetch("https://travel-planner-3o1b.onrender.com/api/home/cities", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ keyword: input }),
