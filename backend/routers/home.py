@@ -1,15 +1,21 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from pydantic import BaseModel
 import httpx
 from httpx import HTTPStatusError
 from backend.supabase_config import SUPABASE_URL, DEFAULT_HEADERS
 from urllib.parse import quote
 import os
+from backend.api_clients.eventbrite_search_by_city import search_events_by_city
 
 router = APIRouter(prefix="/api/home", tags=["Home"])
 
 class CityRequest(BaseModel):
   keyword: str
+  
+class eventRequest(BaseModel):
+  city: str
+  start_date: str
+  end_date: str
 
 def mask_key(key: str) -> str:
     if not key or len(key) < 8:
@@ -17,6 +23,17 @@ def mask_key(key: str) -> str:
     return key[:4] + "****" + key[-4:]
 
 masked_apikey = mask_key(DEFAULT_HEADERS["apikey"])
+
+# check event data
+# '*' in front of a parameter means it accepts any number of arguments
+def get_nested_value(data, *keys, default=None):
+  for key in keys:
+    # isinstance checks if data is a dictionary
+    if isinstance(data, dict) and key in data:
+      data = data[key]
+    else:
+      return default
+  return data
 
 @router.post("/cities")
 async def get_cities(value: CityRequest):
@@ -68,3 +85,19 @@ async def get_cities(value: CityRequest):
     except Exception as e:
       print(f"Other error occurred: {e}")
       return { "error": "Unexpected error occurred." }
+
+@router.post("/event/search")
+async def search_events(value: eventRequest):
+  data = search_events_by_city(value.city)
+  final_data = []
+  for event in data["events"]:
+    event_info = {
+      "id": get_nested_value(event, "id"),
+      "img_url": get_nested_value(event,"image", "url"),
+      "name": get_nested_value(event, "name"),
+      "start_datetime": f"{get_nested_value(event, "start_date")} {get_nested_value(event, "start_time")}",
+      "location": get_nested_value(event, "primary_venue", "address", "localized_area_display"),
+      "min_ticket_price": f"{get_nested_value(event, "ticket_availability", "minimum_ticket_price", "currency")}{get_nested_value(event, "ticket_availability", "minimum_ticket_price", "major_value")}"
+    }
+    final_data.append(event_info)
+  return {"events": final_data}

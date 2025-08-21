@@ -7,3 +7,5 @@ pydantic
 python-dotenv
 requests
 supabase
+selenium
+webdriver-manager

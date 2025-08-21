@@ -1,14 +1,21 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import NavBar from './components/NavBar'
+import Layout from './components/Layout'
 import HomePage from './pages/HomePage'
+import EventsRecommendation from './pages/EventsRecommendation'
 
 function App() {
   return (
     <Router>
-      <NavBar />
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route 
+          path="/"
+          element={<Layout><HomePage /></Layout>}
+        />
+        <Route
+          path="/eventsRecommendation"
+          element={<Layout><EventsRecommendation /></Layout>}
+        />
       </Routes>
     </Router>
   )
