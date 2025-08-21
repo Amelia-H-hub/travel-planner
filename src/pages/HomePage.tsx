@@ -5,6 +5,7 @@ import "flatpickr/dist/themes/airbnb.css";
 import AutoComplete from '../components/AutoComplete';
 import PersonSelector from '../components/PersonSelector';
 import { ArrowBigRightDash } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
 
@@ -15,17 +16,44 @@ export default function HomePage() {
       people: ""
     }
   });
+  
+  const navigate = useNavigate();
 
-  const onSubmit = (data: any) => {
-    console.log('React FormEvent==========', data);
+  const onSubmit =  async (data: any) => {
+    const city = data.city.city;
+    const startDate = formatDate(data.dateRange[0]);
+    const endDate = formatDate(data.dateRange[1]);
+
+    navigate('/eventsRecommendation', {
+      state: {
+        city: city,
+        start_date: startDate,
+        end_date: endDate
+      }
+    });
+    // const req = {
+    //   city: data.city.city,
+    //   start_date: startDate,
+    //   end_date: endDate,
+    // }
+    // console.log('Request data:', req);
+
+    // const res = await fetch("http://localhost:8000/api/home/event/search", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(req),
+    // })
+    // const eventsData = await res.json();
+    // console.log('Events data:', eventsData);
+    // console.log('React FormEvent==========', data);
   }
 
   const onError = (errors: any) => {
-  console.error('❌ Form validation errors:', errors);
-};
+    console.error('❌ Form validation errors:', errors);
+  };
 
   const searchCities = async (input: string) => {
-    const res = await fetch("https://travel-planner-3o1b.onrender.com/api/home/cities", {
+    const res = await fetch("http://localhost:8000/api/home/cities", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ keyword: input }),
@@ -37,6 +65,13 @@ export default function HomePage() {
 
   const onCitySelet = (value: any) => {
     return `${value.city}, ${value.country}`
+  }
+
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}/${month}/${day}`;
   }
 
   return (
@@ -117,7 +152,7 @@ export default function HomePage() {
                 </Controller>
               </div>
               <div className="flex justify-end w-1/3">
-                <button type="submit" onClick={() => console.log("Submit button clicked!")} className="flex justify-center items-center bg-[#2096a8] hover:bg-[#4fa2b1] !border-0 w-full text-white px-6 py-5 rounded-lg">
+                <button type="submit" className="flex justify-center items-center bg-[#2096a8] hover:bg-[#4fa2b1] !border-0 w-full text-white px-6 py-5 rounded-lg">
                   Get Recommendation
                   <ArrowBigRightDash className='pl-2 w-10'/>
                 </button>
