@@ -44,18 +44,19 @@ async def get_cities(value: CityRequest):
     return { "error": "Please provide a keyword at least two characters long." }
 
   async with httpx.AsyncClient() as client:
-    is_local = os.getenv("ENV") == "local"
+    # is_local = os.getenv("ENV") == "local"
     params={
       "name": f"ilike.{value.keyword}%",
       "limit": "20"
     }
-    if is_local:
-      # Encode the keyword for URL, since it contain % character
-      keyword_encoded = quote(f"{value.keyword}%")
-      params={
-        "name": f"ilike.{keyword_encoded}",
-        "limit": "20"
-      }
+    # if is_local:
+    #   # Encode the keyword for URL, since it contain % character
+    #   keyword_encoded = quote(f"{value.keyword}%")
+    #   params={
+    #     "name": f"ilike.{keyword_encoded}",
+    #     "limit": "20"
+    #   }
+    #   print("Parameters for local environment:", params)
 
     try:
       res = await client.get(
