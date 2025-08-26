@@ -8,6 +8,7 @@ import { ArrowBigRightDash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const { control, handleSubmit} = useForm({
     defaultValues: {
@@ -53,7 +54,7 @@ export default function HomePage() {
   };
 
   const searchCities = async (input: string) => {
-    const res = await fetch("http://localhost:8000/api/home/cities", {
+    const res = await fetch(`${API_BASE_URL}/api/home/cities`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ keyword: input }),
