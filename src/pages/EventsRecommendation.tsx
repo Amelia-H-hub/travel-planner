@@ -2,6 +2,8 @@ import { useState, useEffect } from "react"
 import { useLocation } from "react-router-dom";
 
 export default function EventsRecommendation() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const location = useLocation();
   // receive search data from HomePage
   const searchData = location.state || {};
@@ -17,7 +19,7 @@ export default function EventsRecommendation() {
 
   // fetch events based on search data
   const fetchEvents = async (searchData: any) => {
-    const res = await fetch("http://localhost:8000/api/home/event/search", {
+    const res = await fetch(`${API_BASE_URL}/api/home/event/search`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(searchData)
