@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.routers import home
 from mangum import Mangum
 
-app = FastAPI()
+app = FastAPI(root_path="/dev")  # Set root_path to /dev for compatibility with AWS Lambda proxy integration
 
 origins = [
     "http://localhost:5173",
