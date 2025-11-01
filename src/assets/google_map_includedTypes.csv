@@ -1,0 +1,302 @@
+﻿main_category,sub_category,sub_type,used,updated_date
+Automotive,,car_dealer,FALSE,2024-01-01
+Automotive,,car_rental,TRUE,2024-01-01
+Automotive,,car_repair,FALSE,2024-01-01
+Automotive,,car_wash,FALSE,2024-01-01
+Automotive,,electric_vehicle_charging_station,FALSE,2024-01-01
+Automotive,,gas_station,FALSE,2024-01-01
+Automotive,,parking,TRUE,2024-01-01
+Automotive,,rest_stop,TRUE,2024-01-01
+Business,,corporate_office,FALSE,2024-11-07
+Business,,farm,FALSE,2024-01-01
+Business,,ranch,FALSE,2024-11-07
+Culture,,art_gallery,TRUE,2024-01-01
+Culture,,art_studio,TRUE,2024-11-07
+Culture,,auditorium,FALSE,2024-11-07
+Culture,,cultural_landmark,TRUE,2024-11-07
+Culture,,historical_place,TRUE,2024-11-07
+Culture,,monument,TRUE,2024-11-07
+Culture,,museum,TRUE,2024-01-01
+Culture,,performing_arts_theater,FALSE,2024-01-01
+Culture,,sculpture,FALSE,2024-11-07
+Education,,library,FALSE,2024-01-01
+Education,,preschool,FALSE,2024-01-01
+Education,,primary_school,FALSE,2024-01-01
+Education,,school,FALSE,2024-01-01
+Education,,secondary_school,FALSE,2024-01-01
+Education,,university,FALSE,2024-01-01
+Entertainment and Recreation,,adventure_sports_center,FALSE,2024-11-07
+Entertainment and Recreation,,amphitheatre,FALSE,2024-11-07
+Entertainment and Recreation,,amusement_center,TRUE,2024-01-01
+Entertainment and Recreation,,amusement_park,TRUE,2024-01-01
+Entertainment and Recreation,,aquarium,TRUE,2024-01-01
+Entertainment and Recreation,,banquet_hall,FALSE,2024-01-01
+Entertainment and Recreation,,barbecue_area,FALSE,2024-11-07
+Entertainment and Recreation,,botanical_garden,TRUE,2024-11-07
+Entertainment and Recreation,,bowling_alley,FALSE,2024-01-01
+Entertainment and Recreation,,casino,FALSE,2024-01-01
+Entertainment and Recreation,,childrens_camp,FALSE,2024-11-07
+Entertainment and Recreation,,comedy_club,FALSE,2024-11-07
+Entertainment and Recreation,,community_center,FALSE,2024-01-01
+Entertainment and Recreation,,concert_hall,TRUE,2024-11-07
+Entertainment and Recreation,,convention_center,FALSE,2024-01-01
+Entertainment and Recreation,,cultural_center,FALSE,2024-01-01
+Entertainment and Recreation,,cycling_park,FALSE,2024-11-07
+Entertainment and Recreation,,dance_hall,FALSE,2024-11-07
+Entertainment and Recreation,,dog_park,FALSE,2024-01-01
+Entertainment and Recreation,,event_venue,FALSE,2024-01-01
+Entertainment and Recreation,,ferris_wheel,TRUE,2024-11-07
+Entertainment and Recreation,,garden,TRUE,2024-11-07
+Entertainment and Recreation,,hiking_area,TRUE,2024-11-07
+Entertainment and Recreation,,historical_landmark,TRUE,2024-01-01
+Entertainment and Recreation,,internet_cafe,FALSE,2024-11-07
+Entertainment and Recreation,,karaoke,FALSE,2024-11-07
+Entertainment and Recreation,,marina,FALSE,2024-01-01
+Entertainment and Recreation,,movie_rental,FALSE,2024-01-01
+Entertainment and Recreation,,movie_theater,FALSE,2024-01-01
+Entertainment and Recreation,,national_park,TRUE,2024-01-01
+Entertainment and Recreation,,night_club,FALSE,2024-01-01
+Entertainment and Recreation,,observation_deck,TRUE,2024-11-07
+Entertainment and Recreation,,off_roading_area,FALSE,2024-11-07
+Entertainment and Recreation,,opera_house,FALSE,2024-11-07
+Entertainment and Recreation,,park,TRUE,2024-01-01
+Entertainment and Recreation,,philharmonic_hall,FALSE,2024-11-07
+Entertainment and Recreation,,picnic_ground,FALSE,2024-11-07
+Entertainment and Recreation,,planetarium,TRUE,2024-11-07
+Entertainment and Recreation,,plaza,TRUE,2024-11-07
+Entertainment and Recreation,,roller_coaster,TRUE,2024-11-07
+Entertainment and Recreation,,skateboard_park,FALSE,2024-11-07
+Entertainment and Recreation,,state_park,TRUE,2024-11-07
+Entertainment and Recreation,,tourist_attraction,TRUE,2024-01-01
+Entertainment and Recreation,,video_arcade,FALSE,2024-11-07
+Entertainment and Recreation,,visitor_center,FALSE,2024-01-01
+Entertainment and Recreation,,water_park,TRUE,2024-11-07
+Entertainment and Recreation,,wedding_venue,FALSE,2024-01-01
+Entertainment and Recreation,,wildlife_park,TRUE,2024-11-07
+Entertainment and Recreation,,wildlife_refuge,FALSE,2024-11-07
+Entertainment and Recreation,,zoo,TRUE,2024-01-01
+Facilities,,public_bath,FALSE,2024-11-07
+Facilities,,public_bathroom,FALSE,2024-11-07
+Facilities,,stable,FALSE,2024-11-07
+Finance,,accounting,FALSE,2024-01-01
+Finance,,atm,FALSE,2024-01-01
+Finance,,bank,FALSE,2024-01-01
+Food and Drink,snack,acai_shop,FALSE,2024-11-07
+Food and Drink,restaurant,afghani_restaurant,TRUE,2024-11-07
+Food and Drink,restaurant,african_restaurant,TRUE,2024-11-07
+Food and Drink,restaurant,american_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,asian_restaurant,TRUE,2024-11-07
+Food and Drink,snack,bagel_shop,TRUE,2024-11-07
+Food and Drink,snack,bakery,TRUE,2024-01-01
+Food and Drink,night meal,bar,TRUE,2024-01-01
+Food and Drink,night meal,bar_and_grill,TRUE,2024-11-07
+Food and Drink,restaurant,barbecue_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,brazilian_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,breakfast_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,brunch_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,buffet_restaurant,TRUE,2024-11-07
+Food and Drink,snack,cafe,TRUE,2024-01-01
+Food and Drink,restaurant,cafeteria,FALSE,2024-11-07
+Food and Drink,snack,candy_store,TRUE,2024-11-07
+Food and Drink,snack,cat_cafe,TRUE,2024-11-07
+Food and Drink,restaurant,chinese_restaurant,TRUE,2024-01-01
+Food and Drink,snack,chocolate_factory,TRUE,2024-11-07
+Food and Drink,snack,chocolate_shop,TRUE,2024-11-07
+Food and Drink,snack,coffee_shop,TRUE,2024-01-01
+Food and Drink,snack,confectionery,TRUE,2024-11-07
+Food and Drink,restaurant,deli,TRUE,2024-11-07
+Food and Drink,restaurant,dessert_restaurant,TRUE,2024-11-07
+Food and Drink,snack,dessert_shop,TRUE,2024-11-07
+Food and Drink,restaurant,diner,TRUE,2024-11-07
+Food and Drink,snack,dog_cafe,TRUE,2024-11-07
+Food and Drink,snack,donut_shop,TRUE,2024-11-07
+Food and Drink,restaurant,fast_food_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,fine_dining_restaurant,TRUE,2024-11-07
+Food and Drink,restaurant,food_court,TRUE,2024-11-07
+Food and Drink,restaurant,french_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,greek_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,hamburger_restaurant,TRUE,2024-01-01
+Food and Drink,snack,ice_cream_shop,TRUE,2024-01-01
+Food and Drink,restaurant,indian_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,indonesian_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,italian_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,japanese_restaurant,TRUE,2024-01-01
+Food and Drink,snack,juice_shop,TRUE,2024-11-07
+Food and Drink,restaurant,korean_restaurant,TRUE,2024-11-07
+Food and Drink,restaurant,lebanese_restaurant,TRUE,2024-01-01
+Food and Drink,,meal_delivery,FALSE,2024-01-01
+Food and Drink,,meal_takeaway,TRUE,2024-01-01
+Food and Drink,restaurant,mediterranean_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,mexican_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,middle_eastern_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,pizza_restaurant,TRUE,2024-01-01
+Food and Drink,night meal,pub,TRUE,2024-11-07
+Food and Drink,restaurant,ramen_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,restaurant,TRUE,2024-01-01
+Food and Drink,snack,sandwich_shop,TRUE,2024-01-01
+Food and Drink,restaurant,seafood_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,spanish_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,steak_house,TRUE,2024-01-01
+Food and Drink,restaurant,sushi_restaurant,TRUE,2024-01-01
+Food and Drink,snack,tea_house,TRUE,2024-11-07
+Food and Drink,restaurant,thai_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,turkish_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,vegan_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,vegetarian_restaurant,TRUE,2024-01-01
+Food and Drink,restaurant,vietnamese_restaurant,TRUE,2024-01-01
+Food and Drink,night meal,wine_bar,TRUE,2024-11-07
+Geographical Areas,,administrative_area_level_1,FALSE,2024-01-01
+Geographical Areas,,administrative_area_level_2,FALSE,2024-01-01
+Geographical Areas,,country,FALSE,2024-01-01
+Geographical Areas,,locality,FALSE,2024-01-01
+Geographical Areas,,postal_code,FALSE,2024-01-01
+Geographical Areas,,school_district,FALSE,2024-01-01
+Government,,city_hall,FALSE,2024-01-01
+Government,,courthouse,FALSE,2024-01-01
+Government,,embassy,FALSE,2024-01-01
+Government,,fire_station,FALSE,2024-01-01
+Government,,government_office,FALSE,2024-11-07
+Government,,local_government_office,FALSE,2024-01-01
+Government,,neighborhood_police_station (Japan only),FALSE,2024-01-01
+Government,,police,FALSE,2024-01-01
+Government,,post_office,FALSE,2024-01-01
+Health and Wellness,,chiropractor,FALSE,2024-11-07
+Health and Wellness,,dental_clinic,FALSE,2024-01-01
+Health and Wellness,,dentist,FALSE,2024-01-01
+Health and Wellness,,doctor,FALSE,2024-01-01
+Health and Wellness,,drugstore,FALSE,2024-01-01
+Health and Wellness,,hospital,FALSE,2024-01-01
+Health and Wellness,,massage,FALSE,2024-11-07
+Health and Wellness,,medical_lab,FALSE,2024-11-07
+Health and Wellness,,pharmacy,FALSE,2024-01-01
+Health and Wellness,,physiotherapist,FALSE,2024-01-01
+Health and Wellness,,sauna,FALSE,2024-11-07
+Health and Wellness,,skin_care_clinic,FALSE,2024-11-07
+Health and Wellness,,spa,FALSE,2024-01-01
+Health and Wellness,,tanning_studio,FALSE,2024-11-07
+Health and Wellness,,wellness_center,FALSE,2024-11-07
+Health and Wellness,,yoga_studio,FALSE,2024-11-07
+Housing,,apartment_building,FALSE,2024-11-07
+Housing,,apartment_complex,FALSE,2024-11-07
+Housing,,condominium_complex,FALSE,2024-11-07
+Housing,,housing_complex,FALSE,2024-11-07
+Lodging,,bed_and_breakfast,TRUE,2024-01-01
+Lodging,,budget_japanese_inn,FALSE,2024-11-07
+Lodging,,campground,FALSE,2024-01-01
+Lodging,,camping_cabin,FALSE,2024-01-01
+Lodging,,cottage,TRUE,2024-01-01
+Lodging,,extended_stay_hotel,FALSE,2024-01-01
+Lodging,,farmstay,FALSE,2024-01-01
+Lodging,,guest_house,TRUE,2024-01-01
+Lodging,,hostel,TRUE,2024-11-07
+Lodging,,hotel,TRUE,2024-11-07
+Lodging,,inn,TRUE,2024-11-07
+Lodging,,japanese_inn,TRUE,2024-11-07
+Lodging,,lodging,FALSE,2024-01-01
+Lodging,,mobile_home_park,FALSE,2024-11-07
+Lodging,,motel,FALSE,2024-01-01
+Lodging,,private_guest_room,TRUE,2024-01-01
+Lodging,,resort_hotel,TRUE,2024-01-01
+Lodging,,rv_park,FALSE,2024-01-01
+Natural Features,,beach,TRUE,2024-11-07
+Places of Worship,,church,FALSE,2024-01-01
+Places of Worship,,hindu_temple,FALSE,2024-01-01
+Places of Worship,,mosque,FALSE,2024-01-01
+Places of Worship,,synagogue,FALSE,2024-01-01
+Services,,astrologer,FALSE,2024-11-07
+Services,,barber_shop,FALSE,2024-01-01
+Services,,beautician,FALSE,2024-11-07
+Services,,beauty_salon,FALSE,2024-01-01
+Services,,body_art_service,FALSE,2024-11-07
+Services,,catering_service,FALSE,2024-11-07
+Services,,cemetery,FALSE,2024-01-01
+Services,,child_care_agency,FALSE,2024-01-01
+Services,,consultant,FALSE,2024-01-01
+Services,,courier_service,FALSE,2024-01-01
+Services,,electrician,FALSE,2024-01-01
+Services,,florist,FALSE,2024-01-01
+Services,,food_delivery,FALSE,2024-11-07
+Services,,foot_care,FALSE,2024-11-07
+Services,,funeral_home,FALSE,2024-01-01
+Services,,hair_care,FALSE,2024-01-01
+Services,,hair_salon,FALSE,2024-01-01
+Services,,insurance_agency,FALSE,2024-01-01
+Services,,laundry,FALSE,2024-11-07
+Services,,lawyer,FALSE,2024-01-01
+Services,,locksmith,FALSE,2024-01-01
+Services,,makeup_artist,FALSE,2024-11-07
+Services,,moving_company,FALSE,2024-01-01
+Services,,nail_salon,FALSE,2024-11-07
+Services,,painter,FALSE,2024-01-01
+Services,,plumber,FALSE,2024-01-01
+Services,,psychic,FALSE,2024-11-07
+Services,,real_estate_agency,FALSE,2024-01-01
+Services,,roofing_contractor,FALSE,2024-01-01
+Services,,storage,FALSE,2024-01-01
+Services,,summer_camp_organizer,FALSE,2024-11-07
+Services,,tailor,FALSE,2024-01-01
+Services,,telecommunications_service_provider,FALSE,2024-01-01
+Services,,tour_agency,FALSE,2024-11-07
+Services,,tourist_information_center,FALSE,2024-11-07
+Services,,travel_agency,FALSE,2024-01-01
+Services,,veterinary_care,FALSE,2024-01-01
+Shopping,,asian_grocery_store,TRUE,2024-11-07
+Shopping,,auto_parts_store,FALSE,2024-01-01
+Shopping,,bicycle_store,FALSE,2024-01-01
+Shopping,,book_store,FALSE,2024-01-01
+Shopping,,butcher_shop,FALSE,2024-11-07
+Shopping,,cell_phone_store,FALSE,2024-01-01
+Shopping,,clothing_store,FALSE,2024-01-01
+Shopping,,convenience_store,FALSE,2024-01-01
+Shopping,,department_store,TRUE,2024-01-01
+Shopping,,discount_store,FALSE,2024-01-01
+Shopping,,electronics_store,FALSE,2024-01-01
+Shopping,,food_store,TRUE,2024-11-07
+Shopping,,furniture_store,FALSE,2024-01-01
+Shopping,,gift_shop,TRUE,2024-01-01
+Shopping,,grocery_store,FALSE,2024-01-01
+Shopping,,hardware_store,FALSE,2024-01-01
+Shopping,,home_goods_store,FALSE,2024-01-01
+Shopping,,home_improvement_store,FALSE,2024-01-01
+Shopping,,jewelry_store,FALSE,2024-01-01
+Shopping,,liquor_store,FALSE,2024-01-01
+Shopping,,market,TRUE,2024-01-01
+Shopping,,pet_store,FALSE,2024-01-01
+Shopping,,shoe_store,TRUE,2024-01-01
+Shopping,,shopping_mall,TRUE,2024-01-01
+Shopping,,sporting_goods_store,FALSE,2024-01-01
+Shopping,,store,FALSE,2024-01-01
+Shopping,,supermarket,TRUE,2024-01-01
+Shopping,,warehouse_store,TRUE,2024-11-07
+Shopping,,wholesaler,FALSE,2024-01-01
+Sports,,arena,TRUE,2024-11-07
+Sports,,athletic_field,FALSE,2024-01-01
+Sports,,fishing_charter,FALSE,2024-11-07
+Sports,,fishing_pond,FALSE,2024-11-07
+Sports,,fitness_center,FALSE,2024-01-01
+Sports,,golf_course,FALSE,2024-01-01
+Sports,,gym,FALSE,2024-01-01
+Sports,,ice_skating_rink,FALSE,2024-11-07
+Sports,,playground,FALSE,2024-11-07
+Sports,,ski_resort,FALSE,2024-01-01
+Sports,,sports_activity_location,FALSE,2024-11-07
+Sports,,sports_club,FALSE,2024-01-01
+Sports,,sports_coaching,FALSE,2024-11-07
+Sports,,sports_complex,FALSE,2024-01-01
+Sports,,stadium,TRUE,2024-01-01
+Sports,,swimming_pool,FALSE,2024-01-01
+Transportation,,airport,TRUE,2024-01-01
+Transportation,,airstrip,FALSE,2024-11-07
+Transportation,,bus_station,TRUE,2024-01-01
+Transportation,,bus_stop,TRUE,2024-01-01
+Transportation,,ferry_terminal,TRUE,2024-01-01
+Transportation,,heliport,FALSE,2024-01-01
+Transportation,,international_airport,TRUE,2024-11-07
+Transportation,,light_rail_station,TRUE,2024-01-01
+Transportation,,park_and_ride,FALSE,2024-11-07
+Transportation,,subway_station,TRUE,2024-01-01
+Transportation,,taxi_stand,FALSE,2024-01-01
+Transportation,,train_station,TRUE,2024-01-01
+Transportation,,transit_depot,TRUE,2024-01-01
+Transportation,,transit_station,TRUE,2024-01-01
+Transportation,,truck_stop,FALSE,2024-01-01

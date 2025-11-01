@@ -1,0 +1,302 @@
+﻿main_category,sub_category,sub_type,used,updated_date,Column1
+Automotive,,car_dealer,FALSE,2024-01-01,car_dealer
+Automotive,,car_rental,TRUE,2024-01-01,car_rental
+Automotive,,car_repair,FALSE,2024-01-01,car_repair
+Automotive,,car_wash,FALSE,2024-01-01,car_wash
+Automotive,,electric_vehicle_charging_station,FALSE,2024-01-01,electric_vehicle_charging_station
+Automotive,,gas_station,FALSE,2024-01-01,gas_station
+Automotive,,parking,TRUE,2024-01-01,parking
+Automotive,,rest_stop,TRUE,2024-01-01,rest_stop
+Business,,corporate_office *,FALSE,2024-11-07,corporate_office
+Business,,farm,FALSE,2024-01-01,farm
+Business,,ranch *,FALSE,2024-11-07,ranch
+Culture,,art_gallery,TRUE,2024-01-01,art_gallery
+Culture,,art_studio *,TRUE,2024-11-07,art_studio
+Culture,,auditorium *,FALSE,2024-11-07,auditorium
+Culture,,cultural_landmark *,TRUE,2024-11-07,cultural_landmark
+Culture,,historical_place *,TRUE,2024-11-07,historical_place
+Culture,,monument *,TRUE,2024-11-07,monument
+Culture,,museum,TRUE,2024-01-01,museum
+Culture,,performing_arts_theater,FALSE,2024-01-01,performing_arts_theater
+Culture,,sculpture *,FALSE,2024-11-07,sculpture
+Education,,library,FALSE,2024-01-01,library
+Education,,preschool,FALSE,2024-01-01,preschool
+Education,,primary_school,FALSE,2024-01-01,primary_school
+Education,,school,FALSE,2024-01-01,school
+Education,,secondary_school,FALSE,2024-01-01,secondary_school
+Education,,university,FALSE,2024-01-01,university
+Entertainment and Recreation,,adventure_sports_center *,FALSE,2024-11-07,adventure_sports_center
+Entertainment and Recreation,,amphitheatre *,FALSE,2024-11-07,amphitheatre
+Entertainment and Recreation,,amusement_center,TRUE,2024-01-01,amusement_center
+Entertainment and Recreation,,amusement_park,TRUE,2024-01-01,amusement_park
+Entertainment and Recreation,,aquarium,TRUE,2024-01-01,aquarium
+Entertainment and Recreation,,banquet_hall,FALSE,2024-01-01,banquet_hall
+Entertainment and Recreation,,barbecue_area *,FALSE,2024-11-07,barbecue_area
+Entertainment and Recreation,,botanical_garden *,TRUE,2024-11-07,botanical_garden
+Entertainment and Recreation,,bowling_alley,FALSE,2024-01-01,bowling_alley
+Entertainment and Recreation,,casino,FALSE,2024-01-01,casino
+Entertainment and Recreation,,childrens_camp *,FALSE,2024-11-07,childrens_camp
+Entertainment and Recreation,,comedy_club *,FALSE,2024-11-07,comedy_club
+Entertainment and Recreation,,community_center,FALSE,2024-01-01,community_center
+Entertainment and Recreation,,concert_hall *,TRUE,2024-11-07,concert_hall
+Entertainment and Recreation,,convention_center,FALSE,2024-01-01,convention_center
+Entertainment and Recreation,,cultural_center,FALSE,2024-01-01,cultural_center
+Entertainment and Recreation,,cycling_park *,FALSE,2024-11-07,cycling_park
+Entertainment and Recreation,,dance_hall *,FALSE,2024-11-07,dance_hall
+Entertainment and Recreation,,dog_park,FALSE,2024-01-01,dog_park
+Entertainment and Recreation,,event_venue,FALSE,2024-01-01,event_venue
+Entertainment and Recreation,,ferris_wheel *,TRUE,2024-11-07,ferris_wheel
+Entertainment and Recreation,,garden *,TRUE,2024-11-07,garden
+Entertainment and Recreation,,hiking_area *,TRUE,2024-11-07,hiking_area
+Entertainment and Recreation,,historical_landmark,TRUE,2024-01-01,historical_landmark
+Entertainment and Recreation,,internet_cafe *,FALSE,2024-11-07,internet_cafe
+Entertainment and Recreation,,karaoke *,FALSE,2024-11-07,karaoke
+Entertainment and Recreation,,marina,FALSE,2024-01-01,marina
+Entertainment and Recreation,,movie_rental,FALSE,2024-01-01,movie_rental
+Entertainment and Recreation,,movie_theater,FALSE,2024-01-01,movie_theater
+Entertainment and Recreation,,national_park,TRUE,2024-01-01,national_park
+Entertainment and Recreation,,night_club,FALSE,2024-01-01,night_club
+Entertainment and Recreation,,observation_deck *,TRUE,2024-11-07,observation_deck
+Entertainment and Recreation,,off_roading_area *,FALSE,2024-11-07,off_roading_area
+Entertainment and Recreation,,opera_house *,FALSE,2024-11-07,opera_house
+Entertainment and Recreation,,park,TRUE,2024-01-01,park
+Entertainment and Recreation,,philharmonic_hall *,FALSE,2024-11-07,philharmonic_hall
+Entertainment and Recreation,,picnic_ground *,FALSE,2024-11-07,picnic_ground
+Entertainment and Recreation,,planetarium *,TRUE,2024-11-07,planetarium
+Entertainment and Recreation,,plaza *,TRUE,2024-11-07,plaza
+Entertainment and Recreation,,roller_coaster *,TRUE,2024-11-07,roller_coaster
+Entertainment and Recreation,,skateboard_park *,FALSE,2024-11-07,skateboard_park
+Entertainment and Recreation,,state_park *,TRUE,2024-11-07,state_park
+Entertainment and Recreation,,tourist_attraction,TRUE,2024-01-01,tourist_attraction
+Entertainment and Recreation,,video_arcade *,FALSE,2024-11-07,video_arcade
+Entertainment and Recreation,,visitor_center,FALSE,2024-01-01,visitor_center
+Entertainment and Recreation,,water_park *,TRUE,2024-11-07,water_park
+Entertainment and Recreation,,wedding_venue,FALSE,2024-01-01,wedding_venue
+Entertainment and Recreation,,wildlife_park *,TRUE,2024-11-07,wildlife_park
+Entertainment and Recreation,,wildlife_refuge *,FALSE,2024-11-07,wildlife_refuge
+Entertainment and Recreation,,zoo,TRUE,2024-01-01,zoo
+Facilities,,public_bath *,FALSE,2024-11-07,public_bath
+Facilities,,public_bathroom *,FALSE,2024-11-07,public_bathroom
+Facilities,,stable *,FALSE,2024-11-07,stable
+Finance,,accounting,FALSE,2024-01-01,accounting
+Finance,,atm,FALSE,2024-01-01,atm
+Finance,,bank,FALSE,2024-01-01,bank
+Food and Drink,snack,acai_shop *,FALSE,2024-11-07,acai_shop
+Food and Drink,restaurant,afghani_restaurant *,TRUE,2024-11-07,afghani_restaurant
+Food and Drink,restaurant,african_restaurant *,TRUE,2024-11-07,african_restaurant
+Food and Drink,restaurant,american_restaurant,TRUE,2024-01-01,american_restaurant
+Food and Drink,restaurant,asian_restaurant *,TRUE,2024-11-07,asian_restaurant
+Food and Drink,snack,bagel_shop *,TRUE,2024-11-07,bagel_shop
+Food and Drink,snack,bakery,TRUE,2024-01-01,bakery
+Food and Drink,night meal,bar,TRUE,2024-01-01,bar
+Food and Drink,night meal,bar_and_grill *,TRUE,2024-11-07,bar_and_grill
+Food and Drink,restaurant,barbecue_restaurant,TRUE,2024-01-01,barbecue_restaurant
+Food and Drink,restaurant,brazilian_restaurant,TRUE,2024-01-01,brazilian_restaurant
+Food and Drink,restaurant,breakfast_restaurant,TRUE,2024-01-01,breakfast_restaurant
+Food and Drink,restaurant,brunch_restaurant,TRUE,2024-01-01,brunch_restaurant
+Food and Drink,restaurant,buffet_restaurant *,TRUE,2024-11-07,buffet_restaurant
+Food and Drink,snack,cafe,TRUE,2024-01-01,cafe
+Food and Drink,restaurant,cafeteria *,FALSE,2024-11-07,cafeteria
+Food and Drink,snack,candy_store *,TRUE,2024-11-07,candy_store
+Food and Drink,snack,cat_cafe *,TRUE,2024-11-07,cat_cafe
+Food and Drink,restaurant,chinese_restaurant,TRUE,2024-01-01,chinese_restaurant
+Food and Drink,snack,chocolate_factory *,TRUE,2024-11-07,chocolate_factory
+Food and Drink,snack,chocolate_shop *,TRUE,2024-11-07,chocolate_shop
+Food and Drink,snack,coffee_shop,TRUE,2024-01-01,coffee_shop
+Food and Drink,snack,confectionery *,TRUE,2024-11-07,confectionery
+Food and Drink,restaurant,deli *,TRUE,2024-11-07,deli
+Food and Drink,restaurant,dessert_restaurant *,TRUE,2024-11-07,dessert_restaurant
+Food and Drink,snack,dessert_shop *,TRUE,2024-11-07,dessert_shop
+Food and Drink,restaurant,diner *,TRUE,2024-11-07,diner
+Food and Drink,snack,dog_cafe *,TRUE,2024-11-07,dog_cafe
+Food and Drink,snack,donut_shop *,TRUE,2024-11-07,donut_shop
+Food and Drink,restaurant,fast_food_restaurant,TRUE,2024-01-01,fast_food_restaurant
+Food and Drink,restaurant,fine_dining_restaurant *,TRUE,2024-11-07,fine_dining_restaurant
+Food and Drink,restaurant,food_court *,TRUE,2024-11-07,food_court
+Food and Drink,restaurant,french_restaurant,TRUE,2024-01-01,french_restaurant
+Food and Drink,restaurant,greek_restaurant,TRUE,2024-01-01,greek_restaurant
+Food and Drink,restaurant,hamburger_restaurant,TRUE,2024-01-01,hamburger_restaurant
+Food and Drink,snack,ice_cream_shop,TRUE,2024-01-01,ice_cream_shop
+Food and Drink,restaurant,indian_restaurant,TRUE,2024-01-01,indian_restaurant
+Food and Drink,restaurant,indonesian_restaurant,TRUE,2024-01-01,indonesian_restaurant
+Food and Drink,restaurant,italian_restaurant,TRUE,2024-01-01,italian_restaurant
+Food and Drink,restaurant,japanese_restaurant,TRUE,2024-01-01,japanese_restaurant
+Food and Drink,snack,juice_shop *,TRUE,2024-11-07,juice_shop
+Food and Drink,restaurant,korean_restaurant *,TRUE,2024-11-07,korean_restaurant
+Food and Drink,restaurant,lebanese_restaurant,TRUE,2024-01-01,lebanese_restaurant
+Food and Drink,,meal_delivery,FALSE,2024-01-01,meal_delivery
+Food and Drink,,meal_takeaway,TRUE,2024-01-01,meal_takeaway
+Food and Drink,restaurant,mediterranean_restaurant,TRUE,2024-01-01,mediterranean_restaurant
+Food and Drink,restaurant,mexican_restaurant,TRUE,2024-01-01,mexican_restaurant
+Food and Drink,restaurant,middle_eastern_restaurant,TRUE,2024-01-01,middle_eastern_restaurant
+Food and Drink,restaurant,pizza_restaurant,TRUE,2024-01-01,pizza_restaurant
+Food and Drink,night meal,pub *,TRUE,2024-11-07,pub
+Food and Drink,restaurant,ramen_restaurant,TRUE,2024-01-01,ramen_restaurant
+Food and Drink,restaurant,restaurant,TRUE,2024-01-01,restaurant
+Food and Drink,snack,sandwich_shop,TRUE,2024-01-01,sandwich_shop
+Food and Drink,restaurant,seafood_restaurant,TRUE,2024-01-01,seafood_restaurant
+Food and Drink,restaurant,spanish_restaurant,TRUE,2024-01-01,spanish_restaurant
+Food and Drink,restaurant,steak_house,TRUE,2024-01-01,steak_house
+Food and Drink,restaurant,sushi_restaurant,TRUE,2024-01-01,sushi_restaurant
+Food and Drink,snack,tea_house *,TRUE,2024-11-07,tea_house
+Food and Drink,restaurant,thai_restaurant,TRUE,2024-01-01,thai_restaurant
+Food and Drink,restaurant,turkish_restaurant,TRUE,2024-01-01,turkish_restaurant
+Food and Drink,restaurant,vegan_restaurant,TRUE,2024-01-01,vegan_restaurant
+Food and Drink,restaurant,vegetarian_restaurant,TRUE,2024-01-01,vegetarian_restaurant
+Food and Drink,restaurant,vietnamese_restaurant,TRUE,2024-01-01,vietnamese_restaurant
+Food and Drink,night meal,wine_bar *,TRUE,2024-11-07,wine_bar
+Geographical Areas,,administrative_area_level_1,FALSE,2024-01-01,administrative_area_level_1
+Geographical Areas,,administrative_area_level_2,FALSE,2024-01-01,administrative_area_level_2
+Geographical Areas,,country,FALSE,2024-01-01,country
+Geographical Areas,,locality,FALSE,2024-01-01,locality
+Geographical Areas,,postal_code,FALSE,2024-01-01,postal_code
+Geographical Areas,,school_district,FALSE,2024-01-01,school_district
+Government,,city_hall,FALSE,2024-01-01,city_hall
+Government,,courthouse,FALSE,2024-01-01,courthouse
+Government,,embassy,FALSE,2024-01-01,embassy
+Government,,fire_station,FALSE,2024-01-01,fire_station
+Government,,government_office *,FALSE,2024-11-07,government_office
+Government,,local_government_office,FALSE,2024-01-01,local_government_office
+Government,,neighborhood_police_station (Japan only),FALSE,2024-01-01,neighborhood_police_station (Japan only)
+Government,,police,FALSE,2024-01-01,police
+Government,,post_office,FALSE,2024-01-01,post_office
+Health and Wellness,,chiropractor *,FALSE,2024-11-07,chiropractor
+Health and Wellness,,dental_clinic,FALSE,2024-01-01,dental_clinic
+Health and Wellness,,dentist,FALSE,2024-01-01,dentist
+Health and Wellness,,doctor,FALSE,2024-01-01,doctor
+Health and Wellness,,drugstore,FALSE,2024-01-01,drugstore
+Health and Wellness,,hospital,FALSE,2024-01-01,hospital
+Health and Wellness,,massage *,FALSE,2024-11-07,massage
+Health and Wellness,,medical_lab *,FALSE,2024-11-07,medical_lab
+Health and Wellness,,pharmacy,FALSE,2024-01-01,pharmacy
+Health and Wellness,,physiotherapist,FALSE,2024-01-01,physiotherapist
+Health and Wellness,,sauna *,FALSE,2024-11-07,sauna
+Health and Wellness,,skin_care_clinic *,FALSE,2024-11-07,skin_care_clinic
+Health and Wellness,,spa,FALSE,2024-01-01,spa
+Health and Wellness,,tanning_studio *,FALSE,2024-11-07,tanning_studio
+Health and Wellness,,wellness_center *,FALSE,2024-11-07,wellness_center
+Health and Wellness,,yoga_studio *,FALSE,2024-11-07,yoga_studio
+Housing,,apartment_building *,FALSE,2024-11-07,apartment_building
+Housing,,apartment_complex *,FALSE,2024-11-07,apartment_complex
+Housing,,condominium_complex *,FALSE,2024-11-07,condominium_complex
+Housing,,housing_complex *,FALSE,2024-11-07,housing_complex
+Lodging,,bed_and_breakfast,TRUE,2024-01-01,bed_and_breakfast
+Lodging,,budget_japanese_inn *,FALSE,2024-11-07,budget_japanese_inn
+Lodging,,campground,FALSE,2024-01-01,campground
+Lodging,,camping_cabin,FALSE,2024-01-01,camping_cabin
+Lodging,,cottage,TRUE,2024-01-01,cottage
+Lodging,,extended_stay_hotel,FALSE,2024-01-01,extended_stay_hotel
+Lodging,,farmstay,FALSE,2024-01-01,farmstay
+Lodging,,guest_house,TRUE,2024-01-01,guest_house
+Lodging,,hostel *,TRUE,2024-11-07,hostel
+Lodging,,hotel *,TRUE,2024-11-07,hotel
+Lodging,,inn *,TRUE,2024-11-07,inn
+Lodging,,japanese_inn *,TRUE,2024-11-07,japanese_inn
+Lodging,,lodging,FALSE,2024-01-01,lodging
+Lodging,,mobile_home_park *,FALSE,2024-11-07,mobile_home_park
+Lodging,,motel,FALSE,2024-01-01,motel
+Lodging,,private_guest_room,TRUE,2024-01-01,private_guest_room
+Lodging,,resort_hotel,TRUE,2024-01-01,resort_hotel
+Lodging,,rv_park,FALSE,2024-01-01,rv_park
+Natural Features,,beach *,TRUE,2024-11-07,beach
+Places of Worship,,church,FALSE,2024-01-01,church
+Places of Worship,,hindu_temple,FALSE,2024-01-01,hindu_temple
+Places of Worship,,mosque,FALSE,2024-01-01,mosque
+Places of Worship,,synagogue,FALSE,2024-01-01,synagogue
+Services,,astrologer *,FALSE,2024-11-07,astrologer
+Services,,barber_shop,FALSE,2024-01-01,barber_shop
+Services,,beautician *,FALSE,2024-11-07,beautician
+Services,,beauty_salon,FALSE,2024-01-01,beauty_salon
+Services,,body_art_service *,FALSE,2024-11-07,body_art_service
+Services,,catering_service *,FALSE,2024-11-07,catering_service
+Services,,cemetery,FALSE,2024-01-01,cemetery
+Services,,child_care_agency,FALSE,2024-01-01,child_care_agency
+Services,,consultant,FALSE,2024-01-01,consultant
+Services,,courier_service,FALSE,2024-01-01,courier_service
+Services,,electrician,FALSE,2024-01-01,electrician
+Services,,florist,FALSE,2024-01-01,florist
+Services,,food_delivery *,FALSE,2024-11-07,food_delivery
+Services,,foot_care *,FALSE,2024-11-07,foot_care
+Services,,funeral_home,FALSE,2024-01-01,funeral_home
+Services,,hair_care,FALSE,2024-01-01,hair_care
+Services,,hair_salon,FALSE,2024-01-01,hair_salon
+Services,,insurance_agency,FALSE,2024-01-01,insurance_agency
+Services,,laundry *,FALSE,2024-11-07,laundry
+Services,,lawyer,FALSE,2024-01-01,lawyer
+Services,,locksmith,FALSE,2024-01-01,locksmith
+Services,,makeup_artist *,FALSE,2024-11-07,makeup_artist
+Services,,moving_company,FALSE,2024-01-01,moving_company
+Services,,nail_salon *,FALSE,2024-11-07,nail_salon
+Services,,painter,FALSE,2024-01-01,painter
+Services,,plumber,FALSE,2024-01-01,plumber
+Services,,psychic *,FALSE,2024-11-07,psychic
+Services,,real_estate_agency,FALSE,2024-01-01,real_estate_agency
+Services,,roofing_contractor,FALSE,2024-01-01,roofing_contractor
+Services,,storage,FALSE,2024-01-01,storage
+Services,,summer_camp_organizer *,FALSE,2024-11-07,summer_camp_organizer
+Services,,tailor,FALSE,2024-01-01,tailor
+Services,,telecommunications_service_provider,FALSE,2024-01-01,telecommunications_service_provider
+Services,,tour_agency *,FALSE,2024-11-07,tour_agency
+Services,,tourist_information_center *,FALSE,2024-11-07,tourist_information_center
+Services,,travel_agency,FALSE,2024-01-01,travel_agency
+Services,,veterinary_care,FALSE,2024-01-01,veterinary_care
+Shopping,,asian_grocery_store *,TRUE,2024-11-07,asian_grocery_store
+Shopping,,auto_parts_store,FALSE,2024-01-01,auto_parts_store
+Shopping,,bicycle_store,FALSE,2024-01-01,bicycle_store
+Shopping,,book_store,FALSE,2024-01-01,book_store
+Shopping,,butcher_shop *,FALSE,2024-11-07,butcher_shop
+Shopping,,cell_phone_store,FALSE,2024-01-01,cell_phone_store
+Shopping,,clothing_store,FALSE,2024-01-01,clothing_store
+Shopping,,convenience_store,FALSE,2024-01-01,convenience_store
+Shopping,,department_store,TRUE,2024-01-01,department_store
+Shopping,,discount_store,FALSE,2024-01-01,discount_store
+Shopping,,electronics_store,FALSE,2024-01-01,electronics_store
+Shopping,,food_store *,TRUE,2024-11-07,food_store
+Shopping,,furniture_store,FALSE,2024-01-01,furniture_store
+Shopping,,gift_shop,TRUE,2024-01-01,gift_shop
+Shopping,,grocery_store,FALSE,2024-01-01,grocery_store
+Shopping,,hardware_store,FALSE,2024-01-01,hardware_store
+Shopping,,home_goods_store,FALSE,2024-01-01,home_goods_store
+Shopping,,home_improvement_store,FALSE,2024-01-01,home_improvement_store
+Shopping,,jewelry_store,FALSE,2024-01-01,jewelry_store
+Shopping,,liquor_store,FALSE,2024-01-01,liquor_store
+Shopping,,market,TRUE,2024-01-01,market
+Shopping,,pet_store,FALSE,2024-01-01,pet_store
+Shopping,,shoe_store,TRUE,2024-01-01,shoe_store
+Shopping,,shopping_mall,TRUE,2024-01-01,shopping_mall
+Shopping,,sporting_goods_store,FALSE,2024-01-01,sporting_goods_store
+Shopping,,store,FALSE,2024-01-01,store
+Shopping,,supermarket,TRUE,2024-01-01,supermarket
+Shopping,,warehouse_store *,TRUE,2024-11-07,warehouse_store
+Shopping,,wholesaler,FALSE,2024-01-01,wholesaler
+Sports,,arena *,TRUE,2024-11-07,arena
+Sports,,athletic_field,FALSE,2024-01-01,athletic_field
+Sports,,fishing_charter *,FALSE,2024-11-07,fishing_charter
+Sports,,fishing_pond *,FALSE,2024-11-07,fishing_pond
+Sports,,fitness_center,FALSE,2024-01-01,fitness_center
+Sports,,golf_course,FALSE,2024-01-01,golf_course
+Sports,,gym,FALSE,2024-01-01,gym
+Sports,,ice_skating_rink *,FALSE,2024-11-07,ice_skating_rink
+Sports,,playground *,FALSE,2024-11-07,playground
+Sports,,ski_resort,FALSE,2024-01-01,ski_resort
+Sports,,sports_activity_location *,FALSE,2024-11-07,sports_activity_location
+Sports,,sports_club,FALSE,2024-01-01,sports_club
+Sports,,sports_coaching *,FALSE,2024-11-07,sports_coaching
+Sports,,sports_complex,FALSE,2024-01-01,sports_complex
+Sports,,stadium,TRUE,2024-01-01,stadium
+Sports,,swimming_pool,FALSE,2024-01-01,swimming_pool
+Transportation,,airport,TRUE,2024-01-01,airport
+Transportation,,airstrip *,FALSE,2024-11-07,airstrip
+Transportation,,bus_station,TRUE,2024-01-01,bus_station
+Transportation,,bus_stop,TRUE,2024-01-01,bus_stop
+Transportation,,ferry_terminal,TRUE,2024-01-01,ferry_terminal
+Transportation,,heliport,FALSE,2024-01-01,heliport
+Transportation,,international_airport *,TRUE,2024-11-07,international_airport
+Transportation,,light_rail_station,TRUE,2024-01-01,light_rail_station
+Transportation,,park_and_ride *,FALSE,2024-11-07,park_and_ride
+Transportation,,subway_station,TRUE,2024-01-01,subway_station
+Transportation,,taxi_stand,FALSE,2024-01-01,taxi_stand
+Transportation,,train_station,TRUE,2024-01-01,train_station
+Transportation,,transit_depot,TRUE,2024-01-01,transit_depot
+Transportation,,transit_station,TRUE,2024-01-01,transit_station
+Transportation,,truck_stop,FALSE,2024-01-01,truck_stop

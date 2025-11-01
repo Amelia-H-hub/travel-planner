@@ -9,3 +9,5 @@ requests
 supabase
 selenium
 webdriver-manager
+boto3
+geopy
