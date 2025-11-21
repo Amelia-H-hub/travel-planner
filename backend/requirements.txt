@@ -11,3 +11,5 @@ selenium
 webdriver-manager
 boto3
 geopy
+passlib[bcrypt]
+itsdangerous
