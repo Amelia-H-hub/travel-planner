@@ -1,21 +1,37 @@
 import './App.css'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router,
+  Routes,
+  Route
+} from 'react-router-dom'
 import Layout from './components/Layout'
 import HomePage from './pages/HomePage'
+import Register from './pages/Register'
 import EventsRecommendation from './pages/EventsRecommendation'
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route 
-          path="/"
-          element={<Layout><HomePage /></Layout>}
-        />
+        {/* Parent route: Define Layout */}
         <Route
-          path="/eventsRecommendation"
-          element={<Layout><EventsRecommendation /></Layout>}
-        />
+          path="/"
+          element={<Layout />}
+        >
+          {/* Children route: It would be rendered at where <Outlet> in <Layout> */}
+          <Route 
+            index // index means this is the default route of the parent route
+            element={<HomePage />}
+          />
+          <Route 
+            path="register" // since the parent route is '/', we only need to put relative path here
+            element={<Register />}
+          />
+          <Route
+            path="eventsRecommendation"
+            element={<EventsRecommendation />}
+          />
+          {/* Error page (to be defined) */}
+        </Route>
       </Routes>
     </Router>
   )
