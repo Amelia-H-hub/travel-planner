@@ -6,7 +6,7 @@ import AutoComplete from '../components/AutoComplete';
 import PersonSelector from '../components/PersonSelector';
 import { ArrowBigRightDash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { API_BASE_URL } from '@/constant';
+import { API_BASE_URL } from '@/constants';
 
 
 export default function HomePage() {

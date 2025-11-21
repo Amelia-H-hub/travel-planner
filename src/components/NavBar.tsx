@@ -5,9 +5,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useLoginModal } from "../context/LoginModalContext";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
+import { API_BASE_URL } from '@/constants';
 
 export default function NavBar() {
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();

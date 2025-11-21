@@ -1,11 +1,11 @@
 // Share login information
 
 import { createContext, useContext, useState, useEffect } from "react";
+import { API_BASE_URL } from '@/constants';
 
 const AuthContext = createContext<any>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);

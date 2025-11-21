@@ -4,10 +4,10 @@ import "flatpickr/dist/themes/airbnb.css";
 import { useLoginModal } from "../context/LoginModalContext";
 import { useNavigate } from "react-router-dom";
 import { validatePassword, validateConfirmPassword } from "../utils/validation";
-import { toast } from "sonner"
+import { toast } from "sonner";
+import { API_BASE_URL } from '@/constants';
 
 export default function Register() {
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const { openLoginModal } = useLoginModal();
   const { control, handleSubmit, getValues } = useForm({

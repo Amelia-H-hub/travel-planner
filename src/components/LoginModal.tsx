@@ -3,6 +3,7 @@ import navIcon from "../assets/navIcon.png";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner"
+import { API_BASE_URL } from '@/constants';
 
 type LoginModalProps = {
   isOpen: boolean;
@@ -12,7 +13,6 @@ type LoginModalProps = {
 export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   if (!isOpen) return null;
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const { control, handleSubmit, getValues, reset } = useForm({
     defaultValues: {
       email: "",
