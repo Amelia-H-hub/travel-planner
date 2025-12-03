@@ -58,12 +58,12 @@ export default function NavBar() {
           {user ? (
             <div className="flex items-center gap-2">
               <UserRound className="text-white"/>
-              <button className="bg-transparent text-lg text-white h-fit">
+              <button className="bg-transparent! text-lg text-white h-fit">
                 {user.user_name}
               </button>
               <button
                 onClick={logout}
-                className="bg-transparent text-lg text-white underline h-fit"
+                className="bg-transparent! text-lg text-white underline h-fit"
               >
                 Logout
               </button>
@@ -71,7 +71,7 @@ export default function NavBar() {
           ) : (
             <button 
               onClick={openLoginModal}
-              className="bg-transparent text-lg text-white underline h-fit"
+              className="bg-transparent! text-lg text-white underline h-fit"
             >
               Login / Register
             </button>
