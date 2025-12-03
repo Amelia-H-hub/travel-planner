@@ -8,7 +8,6 @@ import { toast } from "sonner";
 import { API_BASE_URL } from '@/constants';
 
 export default function NavBar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { openLoginModal } = useLoginModal();
