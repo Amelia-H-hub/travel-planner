@@ -6,9 +6,10 @@ import AutoComplete from '../components/AutoComplete';
 import PersonSelector from '../components/PersonSelector';
 import { ArrowBigRightDash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '@/constants';
+
 
 export default function HomePage() {
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const { control, handleSubmit} = useForm({
     defaultValues: {
@@ -21,7 +22,7 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   const onSubmit =  async (data: any) => {
-    const city = data.city.city;
+    const city = data.city.name;
     const startDate = formatDate(data.dateRange[0]);
     const endDate = formatDate(data.dateRange[1]);
 
@@ -32,21 +33,6 @@ export default function HomePage() {
         end_date: endDate
       }
     });
-    // const req = {
-    //   city: data.city.city,
-    //   start_date: startDate,
-    //   end_date: endDate,
-    // }
-    // console.log('Request data:', req);
-
-    // const res = await fetch("http://localhost:8000/api/home/event/search", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(req),
-    // })
-    // const eventsData = await res.json();
-    // console.log('Events data:', eventsData);
-    // console.log('React FormEvent==========', data);
   }
 
   const onError = (errors: any) => {
@@ -65,14 +51,14 @@ export default function HomePage() {
   }
 
   const onCitySelet = (value: any) => {
-    return `${value.city}, ${value.country}`
+    return `${value.name}, ${value.country_name}`;
   }
 
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    return `${year}/${month}/${day}`;
+    return `${year}-${month}-${day}`;
   }
 
   return (
@@ -96,7 +82,7 @@ export default function HomePage() {
                     placeholder="Search a city"
                     onSearch={searchCities}
                     onSelect={onCitySelet}
-                    displayFormat={(item: any) => `${item.city}, ${item.country}`}
+                    displayFormat={(item: any) => `${item.name}, ${item.country_name}`}
                   ></AutoComplete>
                 )}
               >
@@ -127,7 +113,7 @@ export default function HomePage() {
                           onChange(selectedDates);
                         }}
                         onBlur={onBlur}
-                        placeholder="YYYY-MM-DD"
+                        placeholder="YYYY-MM-DD to YYYY-MM-DD"
                         className="bg-white w-full text-[#3C3C3C] px-6 py-5 rounded-lg"
                         ref={ref}
                     />
