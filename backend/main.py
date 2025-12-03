@@ -8,7 +8,7 @@ import secrets
 from backend.config import FRONTEND_ORIGINS
 from backend.utils.response_helper import error_response
 from backend.routers import home
-from backend.routers import events
+from backend.routers import schedule
 from backend.routers import auth
 from mangum import Mangum
 
@@ -19,7 +19,11 @@ if not secret_key:
   secret_key = secrets.token_hex(32)
   print(f"Generated SECRET_KEY: {secret_key}")
 
-app = FastAPI(root_path="/dev")  # Set root_path to /dev for compatibility with AWS Lambda proxy integration
+app = FastAPI(
+  docs_url="/docs", # Set docs_url to /docs for compatibility with AWS Lambda proxy integration
+  redoc_url="/redoc", # Set redoc_url to /redoc for compatibility with AWS Lambda proxy integration
+  root_path="/dev" # Set root_path to /dev for compatibility with AWS Lambda proxy integration
+)  
 
 # Allow frontend request from different network
 app.add_middleware(
@@ -40,7 +44,7 @@ app.add_middleware(
 
 # router
 app.include_router(home.router)
-app.include_router(events.router)
+app.include_router(schedule.router)
 app.include_router(auth.router)
 
 # Handle errors that are not dealed with any logic

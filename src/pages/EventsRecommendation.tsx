@@ -20,6 +20,8 @@ interface Spot {
       text: string;
       languageCode: string;
     }
+    start_date: string;
+    end_date: string;
   }
 }
 
@@ -46,7 +48,7 @@ export default function EventsRecommendation() {
 
   // fetch events based on search data
   const fetchEvents = async (searchData: any) => {
-    const res = await fetch(`${API_BASE_URL}/api/events/query`, {
+    const res = await fetch(`${API_BASE_URL}/api/schedule/query`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(searchData)
@@ -71,6 +73,19 @@ export default function EventsRecommendation() {
                     <div className="text-gray-700">
                       {spot.value.displayName.text}
                     </div>
+                    <div className="text-gray-700">
+                      {spot.value.formattedAddress}
+                    </div>
+                    {spot.type === "event" && (
+                      <>
+                        <div className="text-gray-700">
+                          {spot.value.start_date}
+                        </div>
+                        <div className="text-gray-700">
+                          {spot.value.end_date}
+                        </div>
+                      </>
+                    )}
                   </li>
                 ))}
               </ul>
