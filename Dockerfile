@@ -13,7 +13,7 @@ RUN microdnf update -y && \
     microdnf clean all
 
 # 複製需求檔案並安裝相依套件
-COPY requirements.txt .
+COPY backend/requirements.txt .
 RUN pip install -r requirements.txt --no-cache-dir --compile
 
 # 複製 Lambda 函式程式碼到工作目錄
