@@ -1,4 +1,3 @@
-import { useState } from "react";
 import navIcon from "../assets/navIcon.png";
 import { UserRound } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
