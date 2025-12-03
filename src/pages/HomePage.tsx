@@ -139,7 +139,7 @@ export default function HomePage() {
                 </Controller>
               </div>
               <div className="flex justify-end w-1/3">
-                <button type="submit" className="flex justify-center items-center bg-[#2096a8] hover:bg-[#4fa2b1] !border-0 w-full text-white px-6 py-5 rounded-lg">
+                <button type="submit" className="flex justify-center items-center bg-[#2096a8]! hover:bg-[#4fa2b1] !border-0 w-full text-white px-6 py-5 rounded-lg">
                   Get Recommendation
                   <ArrowBigRightDash className='pl-2 w-10'/>
                 </button>
