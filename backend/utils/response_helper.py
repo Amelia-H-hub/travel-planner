@@ -8,7 +8,6 @@ def success_response(message: str, data: dict=None, code: int=200):
       "message": message,
       "data": data or {}
     }
-    
   )
 
 def error_response(code: int, message: str):

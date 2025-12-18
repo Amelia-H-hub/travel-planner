@@ -1,3 +1,5 @@
+import numpy as np
+import decimal
 from fastapi import APIRouter
 import requests
 import json
@@ -8,12 +10,12 @@ from pydantic import BaseModel
 import os
 from dotenv import load_dotenv
 import random
-from datetime import datetime, timedelta, time as dtime
+from datetime import date, datetime, timedelta, time as dtime
 from geopy.distance import geodesic
 import time as time
 from math import radians, sin, cos, sqrt, atan2, degrees
 import itertools
-from ..utils.response_helper import success_response, error_response
+from backend.utils.response_helper import success_response, error_response
 
 class EventRequest(BaseModel):
   city: str
@@ -87,10 +89,46 @@ def get_nested_value(data, *keys, default=None):
 def has_event(day):
   return any(item["type"] == "event" for item in day["data"])
 
-def decimal_to_float(obj):
+def default_json_converter(obj):
   if isinstance(obj, Decimal):
     return float(obj)
-  raise TypeError
+  elif isinstance(obj, (np.float64, np.float32, np.int64, np.int32)):
+    return obj.item()
+  raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
+
+def convert_to_json_safe(data):
+    """
+    遞歸地將非標準 Python 類型轉換為 JSON 可序列化的原生類型。
+    處理：Decimal, NumPy types, datetime.date/datetime.datetime
+    """
+    if isinstance(data, dict):
+        # 處理字典：遞歸處理鍵和值
+        return {k: convert_to_json_safe(v) for k, v in data.items()}
+    
+    elif isinstance(data, list):
+        # 處理列表：遞歸處理列表中的每個元素
+        return [convert_to_json_safe(item) for item in data]
+    
+    # --- 處理非標準數據類型 ---
+    
+    elif isinstance(data, decimal.Decimal):
+        # 來自 DynamoDB 的 Decimal 類型
+        # 轉換為原生的 float 或 str (建議 float，因為是經緯度)
+        return float(data)
+    
+    # 處理日期/時間類型 (你的數據中有 '2025-10-01' 等字符串，但如果它們是 datetime 物件，這個會處理)
+    elif isinstance(data, (date, datetime)):
+        # 轉換為 ISO 8601 格式的字符串，例如 '2025-10-01'
+        return data.isoformat()
+    
+    # 處理 NumPy 數值類型 (如果你使用了 Pandas/NumPy)
+    elif np is not None and isinstance(data, (np.float64, np.int64, np.float32, np.int32)):
+        # 使用 .item() 方法轉換為原生的 Python float 或 int
+        return data.item()
+    
+    else:
+        # 處理所有標準類型（str, int, float, bool, None），直接返回
+        return data
 
 # ---------- events data by city & datetime ----------
 def fetch_events(city, start_date, end_date, trip_duration, trip_events):
@@ -132,8 +170,8 @@ def fetch_events(city, start_date, end_date, trip_duration, trip_events):
       "end_date": f"{get_nested_value(event_r, "end_date")}",
       "formattedAddress": get_nested_value(event_r, "address"),
       "location": {
-        "latitude": decimal_to_float(get_nested_value(event_r, "lat")),
-        "longitude": decimal_to_float(get_nested_value(event_r, "lng"))
+        "latitude": default_json_converter(get_nested_value(event_r, "lat")),
+        "longitude": default_json_converter(get_nested_value(event_r, "lng"))
         
       }
     }
@@ -151,13 +189,11 @@ def fetch_events(city, start_date, end_date, trip_duration, trip_events):
     ]
     # if no availabel days
     if len(candidate_days) < 1:
-      print(f"Remove event {event_r["displayName"]["text"]}")
       recommends.pop(i) # remove the event
       # find another event in others
       replacements = [e for e in others if e["end_date"] > event_r["end_date"]]
       if replacements:
         new_event = random.choice(replacements)
-        print(f"Add replacement event {new_event["displayName"]["text"]}")
         recommends.append(new_event)
         others.remove(new_event)
       else:
@@ -180,7 +216,7 @@ def fetch_events(city, start_date, end_date, trip_duration, trip_events):
     
     recommend_result.append(event_info_r)
     i += 1
-  
+    
   return trip_events
 
 # ---------- recommend schedule ----------
@@ -202,7 +238,7 @@ def recommend_schedule(req: EventRequest):
       }
       for i in range(trip_duration)
     ]
-    
+        
     # insert events
     trip_events = fetch_events(city, start_date, end_date, trip_duration, trip_events)
     
@@ -269,6 +305,7 @@ def recommend_schedule(req: EventRequest):
         })
       init_idx += idx
     
+    trip_events = convert_to_json_safe(trip_events)
     print("Fianl trip:", trip_events)
     return success_response(
       "Create suggestion successfully!",
@@ -729,7 +766,7 @@ def gather_points_for_stay(trip_events, trip_duration, start_day_idx, nights):
     loc = item.get("value", {}).get("location")
     if loc_f and "latitude" in loc and "longitude" in loc:
       points.append((loc["latitude"], loc["longitude"]))
-      
+    
   return points
 
 # ---------- dispersion metric ----------
@@ -772,7 +809,7 @@ def get_nearby_accommodation(lat, lng, exist_accommodations_ids):
   ]
   headers = {
     "Content-Type": "application/json",
-    "X-Goog-Api-Key": "AIzaSyD7ze2EIwiG5b2rqhfQksBWGproKoTd7T8",
+    "X-Goog-Api-Key": GOOGLE_MAPS_API_KEY,
     "X-Goog-FieldMask": ",".join(fileds)
   }
   
@@ -799,9 +836,10 @@ def get_nearby_accommodation(lat, lng, exist_accommodations_ids):
     json=body
   )
   data = response.json().get("places", [])
-  
   filtered_data = [
-    accommodation for accommodation in data if "id" in accommodation and accommodation["id"] not in exist_accommodations_ids
+    accommodation for accommodation in data 
+    if "id" in accommodation and 
+      accommodation["id"] not in exist_accommodations_ids
   ]
   return filtered_data[0]
 
@@ -818,6 +856,7 @@ def choose_accommodation_partition(trip_events, trip_duration):
   partitions = list(compositions_with_min(nights, k, min_value=2))
   if not partitions:
     partitions = list(compositions_with_min(nights, k, min_value=1))
+  
   best = None
   best_score = float("inf")
   best_detail = None
@@ -851,7 +890,7 @@ def choose_accommodation_partition(trip_events, trip_duration):
       best_score = total_score
       best = part
       best_detail = detail
-  
+    
   rec_accommodations = []
   exist_accommodations_ids = []
   for detail in best_detail:
@@ -860,8 +899,7 @@ def choose_accommodation_partition(trip_events, trip_duration):
     rec_accommodations.append(rec_accom)
     exist_accommodations_ids.append(rec_accom["id"])
   
-  print(f"Accommodations: \n{list(zip(best, rec_accommodations))}\n")
   return list(zip(best, rec_accommodations))
 
 if __name__ == "__main__":
-  get_recommend_restaurant(25.1277518, 121.4700057, "Wednesday", "lunch", [])
+  get_nearby_accommodation(25.04728301280926, 121.54061090975249, [])

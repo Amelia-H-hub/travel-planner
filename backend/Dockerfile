@@ -13,11 +13,11 @@ RUN microdnf update -y && \
     microdnf clean all
 
 # 複製需求檔案並安裝相依套件
-COPY backend/requirements.txt .
+COPY requirements.txt .
 RUN pip install -r requirements.txt --no-cache-dir --compile
 
 # 複製 Lambda 函式程式碼到工作目錄
-COPY backend/ ./backend/
+COPY . ./backend/
 
 # 設定 Lambda 處理程序 (Handler)
 # FastAPI 實例叫做 'app' 且在 'backend/main.py' 中
