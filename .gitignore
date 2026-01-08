@@ -33,3 +33,4 @@ dist-ssr
 **/venv/
 .env/
 .envrc
+**/ml_venv/
