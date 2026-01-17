@@ -34,3 +34,9 @@ dist-ssr
 .env/
 .envrc
 **/ml_venv/
+tp_venv/
+
+# data and models
+*.csv
+*.joblib
+*.pkl
