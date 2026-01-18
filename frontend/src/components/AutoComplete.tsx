@@ -13,6 +13,7 @@ type AutoCompleteProps = {
 }
 
 export default function AutoComplete({
+  value,
   placeholder = "請輸入文字以查詢",
   onChange,
   onSearch,
@@ -21,37 +22,80 @@ export default function AutoComplete({
 }: AutoCompleteProps) {
   const [inputValue, setInputValue] = useState("");
   const [filteredSuggestions, setFilteredSuggestions] = useState<any[]>([]);
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const value = e.target.value;
-    
-  //   setInputValue(value);
-
-  //   if (value.trim() === "") {
-  //     setFilteredSuggestions([]);
-  //     return;
-  //   }
-
-  //   const filtered = suggestions.filter(s => 
-  //     s.toLowerCase().includes(value.toLowerCase())
-  //   );
-
-  //   setFilteredSuggestions(filtered);
-  // };
+  // Get value from parent Hook Form
+  useEffect(() => {
+    // value is passed by parent component
+    if (value && typeof value === 'object' && displayFormat) {
+      const formatted = displayFormat(value);
+      if (formatted !== inputValue) {
+        setInputValue(formatted)
+      }
+    }
+    // value is reseted by parent component
+    else if (!value && inputValue !== "") {
+      setInputValue("");
+    }
+  }, [value])
 
   useEffect(() => {
-    if (inputValue.length > 1 && onSearch) {
-      onSearch(inputValue).then(setFilteredSuggestions)
+    // Don't search when user select an item or input characters less
+    if (isSelecting || inputValue.length <= 1 || !onSearch) {
+      setFilteredSuggestions([]);
+      setShowDropdown(false);
+      return;
     }
-  }, [inputValue]);
 
-  const handleSelect = (value: any) => {
-    onChange(value);
+    // Debounce
+    const timer = setTimeout(() => {
+      onSearch(inputValue).then((results) => {
+        // Check if user input value is exactly the same as the only option
+        const isExactMatch = results.length === 1 && (displayFormat ? displayFormat(results[0]).toLowerCase(): results[0].toLowerCase()) === inputValue.toLowerCase();
+
+        setFilteredSuggestions(results);
+        if (results.length > 0 && !isExactMatch) {
+          setShowDropdown(true);
+        } else {
+          setShowDropdown(false);
+        }
+      });
+    }, 300)
+
+    return () => clearTimeout(timer);
+  }, [inputValue, onSearch, isSelecting]);
+
+  const handleSelect = (item: any) => {
+    setIsSelecting(true);
+    setShowDropdown(false);
+    // empty dropdown options
     setFilteredSuggestions([]);
+
+    // inform Hook Form to update
+    onChange(item);
+    // update input value
     if (onSelect) {
-      setInputValue(onSelect(value))
+      setInputValue(onSelect(item))
     };
   };
+
+  const inputBlur = () => {
+    setTimeout(() => {
+      setShowDropdown(false);
+
+      const exactMatch = filteredSuggestions.find((item) => {
+        const label = displayFormat ? displayFormat(item) : item;
+        return label.toLowerCase() === inputValue.trim().toLowerCase();
+      });
+
+      if (exactMatch) {
+        handleSelect(exactMatch);
+      } else if (inputValue.trim() === "") {
+        onChange(null);
+      }
+    }, 200);
+  }
 
   return (
     <div className="relative w-full">
@@ -59,13 +103,15 @@ export default function AutoComplete({
         type="search"
         value={inputValue}
         onChange={(e) => {
+          setIsSelecting(false);
           setInputValue(e.target.value);
         }}
+        onBlur={inputBlur}
         placeholder={placeholder}
         className="bg-white w-full text-[#3C3C3C] px-6 py-5 rounded-lg"
       >
       </input>
-      {filteredSuggestions.length > 0 && (
+      {showDropdown && filteredSuggestions.length > 0 && (
         <ul className="absolute z-10 max-h-[250px] overflow-y-scroll bg-white border border-gray-200 w-full rounded mt-1 shadow">
           {filteredSuggestions.map((item, index) => (
             <li

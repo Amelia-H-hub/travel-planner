@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type Ref } from "react";
+import { useEffect, useRef, useState, useMemo, type Ref } from "react";
 
 type PersonSelectorProps = {
   value: any;
@@ -9,18 +9,16 @@ type PersonSelectorProps = {
 }
 
 const groups = [
-  { key: "children", label: "Children (0-12)" },
-  { key: "teenagers", label: "Teenagers (13-18)" },
-  { key: "youngAdults", label: "Young Adults (19-40)" },
-  { key: "adults", label: "Adults (41-65)" },
-  { key: "seniors", label: "Seniors (66+)" }
+  { key: "babies", label: "Babies (0-2)" },
+  { key: "children", label: "Children (3-11)" },
+  { key: "adults", label: "Adults (12-64)" },
+  { key: "seniors", label: "Seniors (65+)" }
 ];
 
 const displayLabel = {
+  babies: 'Babies',
   children: 'Children',
-  teenagers: 'Teenagers',
-  youngAdults: 'Young Adults',
-  adults: 'Adults',
+  adults: 'adults',
   seniors: 'Seniors'
 }
 
@@ -29,41 +27,68 @@ type Groupkey = keyof typeof displayLabel;
 export default function PersonSelector({ value, onChange }: PersonSelectorProps) {
   const [open, setOpen] = useState(false);
   const [counts, setCounts] = useState<Record<string, number>>({
+    babies: 0,
     children: 0,
-    teenagers: 0,
-    youngAdults: 0,
     adults: 0,
     seniors: 0
   });
-  const [display, setDisplay] = useState("");
-  const [isMultiline, setIsMultiline] = useState(false);
+  // const [display, setDisplay] = useState("");
+  // const [isMultiline, setIsMultiline] = useState(false);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  
+
+  // Get value from parent Hook Form
+  useEffect(() => {
+    if (value && typeof value === 'object') {
+      setCounts(value);
+    }
+  }, [value]);
+
   const handleChange = (key: string, delta: number) => {
-    setCounts((prev) => ({
-      ...prev,
-      [key]: Math.max(0, prev[key] + delta)
-    }));
+    const newCounts = {
+      ...counts,
+      [key]: Math.max(0, (counts[key] || 0) + delta)
+    }
+    setCounts(newCounts);
+    onChange(newCounts);
   }
 
-  useEffect(() => {
-    onChange(counts);
-    const display = Object.entries(counts)
-      .filter(([, value]) => value > 0)
-      .map(([key, value]) => {
-        const groupKey = key as Groupkey;
-        return `${value} ${displayLabel[groupKey] || key}`
-      })
-      .join(', ');
-    
-    setDisplay(display);
-  }, [counts])
+  const handleInputChange = (key: string, value: string) => {
+    const numValue = parseInt(value, 10);
+    const newCounts = {
+      ...counts,
+      [key]: isNaN(numValue) ? 0 : Math.max(0, numValue)
+    };
+    setCounts(newCounts);
+  }
 
-  // 偵測文字長度控制文字大小
-  useEffect(() => {
-    setIsMultiline(display.length > 30);
-  }, [display])
+  const displayText = useMemo(() => {
+    return Object.entries(counts)
+      .filter(([, val]) => val > 0)
+      .map(([key, val]) => `${val} ${displayLabel[key as Groupkey] || key}`)
+      .join(', ');
+  }, [counts]);
+
+  const isMultiline = displayText.length > 30;
+
+  // useEffect(() => {
+  //   const display = Object.entries(counts)
+  //     .filter(([, value]) => value > 0)
+  //     .map(([key, value]) => {
+  //       const groupKey = key as Groupkey;
+  //       return `${value} ${displayLabel[groupKey] || key}`
+  //     })
+  //     .join(', ');
+    
+  //   setDisplay(display);
+  // }, [counts])
+
+  // Change text size based on the length
+  // useEffect(() => {
+  //   setIsMultiline(display.length > 30);
+  // }, [display])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -94,9 +119,9 @@ export default function PersonSelector({ value, onChange }: PersonSelectorProps)
         onClick={() => {
           setOpen(!open);
         }}
-        className={`w-full !bg-white text-[#3C3C3C] px-6 py-5 rounded-lg max-h-[67px] ${isMultiline && display ? 'text-sm': 'text-lg'}`}
+        className={`w-full !bg-white text-[#3C3C3C] px-6 py-5 rounded-lg max-h-[67px] ${isMultiline && displayText ? 'text-sm': 'text-lg'}`}
       >
-        {display ? display : 'Click to select'}
+        {displayText ? displayText : 'Click to select'}
       </button>
 
       {open && (
@@ -113,7 +138,15 @@ export default function PersonSelector({ value, onChange }: PersonSelectorProps)
               >
                 -
               </button>
-              <span className="!bg-white text-[#3C3C3C]">{counts[group.key]}</span>
+              <input
+                type="number"
+                value={counts[group.key]}
+                onFocus={(e) => e.target.select()}
+                onChange={(e) => handleInputChange(group.key, e.target.value)}
+                className="w-12 text-center border-b border-gray-300 focus:border-[#646cff] focus:outline-none bg-transparent text-[#3C3C3C]"
+                min="0"
+              >
+              </input>
               <button
                 type="button"
                 onClick={() => {

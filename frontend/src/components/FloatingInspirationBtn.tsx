@@ -6,7 +6,7 @@ export default function FloatingInspirationBtn() {
 
   return (
     <button
-      onClick={() => navigate('/inspiration')}
+      onClick={() => navigate('/inspirationForm')}
       title="Need Inspiration?"
       className="fixed bottom-10 right-10 z-[1000] flex items-center gap-2 rounded-full bg-[#ff9f1c] px-5 py-4 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:bg-[#ffbf69] hover:shadow-xl md:rounded-[50px]"
     >

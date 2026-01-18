@@ -7,6 +7,8 @@ import Layout from './components/Layout'
 import HomePage from './pages/HomePage'
 import Register from './pages/Register'
 import EventsRecommendation from './pages/EventsRecommendation'
+import InspirationForm from './pages/InspirationForm'
+import CitiesRecommendation from './pages/CitiesRecommendation'
 
 function App() {
   return (
@@ -29,6 +31,14 @@ function App() {
           <Route
             path="eventsRecommendation"
             element={<EventsRecommendation />}
+          />
+          <Route 
+            path="inspirationForm"
+            element={<InspirationForm />}
+          />
+          <Route
+            path="citiesRecommendation"
+            element={<CitiesRecommendation />}
           />
           {/* Error page (to be defined) */}
         </Route>
