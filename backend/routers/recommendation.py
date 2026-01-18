@@ -23,6 +23,7 @@ class ThemePredictInfo(BaseModel):
     age: int
     gender: str
     nationality: str
+    region: str
     companion: Companion
     budget: str
 
