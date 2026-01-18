@@ -119,7 +119,7 @@ export default function PersonSelector({ value, onChange }: PersonSelectorProps)
         onClick={() => {
           setOpen(!open);
         }}
-        className={`w-full !bg-white text-[#3C3C3C] px-6 py-5 rounded-lg max-h-[67px] ${isMultiline && displayText ? 'text-sm': 'text-lg'}`}
+        className={`w-full text-[#3C3C3C] px-6 py-5 !bg-white !border-solid !border-1 !border-gray-500 rounded-lg max-h-[67px] ${isMultiline && displayText ? 'text-sm': 'text-lg'}`}
       >
         {displayText ? displayText : 'Click to select'}
       </button>

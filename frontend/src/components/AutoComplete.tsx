@@ -108,7 +108,7 @@ export default function AutoComplete({
         }}
         onBlur={inputBlur}
         placeholder={placeholder}
-        className="bg-white w-full text-[#3C3C3C] px-6 py-5 rounded-lg"
+        className="w-full text-[#3C3C3C] px-6 py-5 bg-white rounded-lg border-solid border-1 border-gray-500"
       >
       </input>
       {showDropdown && filteredSuggestions.length > 0 && (
