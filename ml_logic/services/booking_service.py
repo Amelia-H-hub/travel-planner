@@ -101,10 +101,7 @@ class BookingService:
         current_input['country'] = get_country_iso_code(user_input['country_name'])
         current_input['deposit_type'] = 'No Deposit' # Default
         current_input['customer_type'] = determine_customer_type(
-            user_input['babies'],
-            user_input['children'],
-            user_input['adults'],
-            user_input['elders']
+            user_input['companion']
         )
         current_input = current_input[RISK_FEATURES]
         
