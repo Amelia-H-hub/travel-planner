@@ -49,9 +49,17 @@ class ThemeCityService:
         predicted_theme = self.predict_theme(user_input)
         ideal_vector = self._build_ideal_vector(predicted_theme)
         ideal_scales = self.scaler.transform([ideal_vector])
-        distance, indices = self.knn.kneighbors(ideal_scales, n_neighbors=30)
+        distance, indices = self.knn.kneighbors(ideal_scales, n_neighbors=100)
         
         candidates = self.city_raw_data.iloc[indices[0]].copy()
+        candidates['similarity'] = 1 - distance[0]
+        
+        # Filter candidates by region
+        user_region = user_input['region']
+        if user_region and user_region != "":
+            filtered_candidates = candidates[candidates['region'] == user_region].copy()
+            if not filtered_candidates.empty:
+                candidates = filtered_candidates
         
         # Calculate budget fit
         user_val = BUDGET_MAP.get(user_input['budget'], 1)
@@ -60,8 +68,8 @@ class ThemeCityService:
         )
         
         # Get total score
-        candidates['similarity'] = 1 - distance[0]
         candidates['final_score'] = candidates['similarity'] * candidates['budget_score']
+        
         results = candidates.sort_values(by='final_score', ascending=False).head(top_n)
         
         city_recommendations = []
