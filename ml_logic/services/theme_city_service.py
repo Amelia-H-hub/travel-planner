@@ -17,10 +17,7 @@ class ThemeCityService:
     
     def predict_theme(self, user_input):
         companion_label = classify_travel_companion(
-            user_input['babies'],
-            user_input['children'],
-            user_input['adults'],
-            user_input['elders'],
+            user_input['companion']
         )
         
         processed_input = {
@@ -31,8 +28,8 @@ class ThemeCityService:
             'Budget_Category': user_input['budget']
         }
         df = pd.DataFrame([processed_input])[THEME_FEATURES]
-        
         df['Budget_Category'] = df['Budget_Category'].map(BUDGET_MAP)
+        
         X_processed = self.preprocessor.transform(df)
         pred_index = self.rf.predict(X_processed)
         

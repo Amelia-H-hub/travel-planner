@@ -1,12 +1,13 @@
 from datetime import datetime, date
 
-def classify_travel_companion(babies, children, adults, elders):
-    total_people = adults + children + babies + elders
+def classify_travel_companion(companion):
+    b, c, a, s = companion['babies'], companion['children'], companion['adults'], companion['seniors']
+    total_people = b + c + a + s
     
     if total_people == 1:
         return 'Solo'
     
-    if adults >=1 and (babies > 0 or children > 0 or elders > 0):
+    if a >= 1 and (b > 0 or c > 0 or s > 0):
         return 'Family'
     
     if total_people > 6:
@@ -30,8 +31,9 @@ def get_month(arrival_date):
     
     return month
 
-def determine_customer_type(babies, children, adults, elders):
-    total_people = babies + children + adults + elders
+def determine_customer_type(companion):
+    b, c, a, s = companion['babies'], companion['children'], companion['adults'], companion['seniors']
+    total_people = b + c + a + s
     
     if total_people > 5:
         return 'Transient-Party'
