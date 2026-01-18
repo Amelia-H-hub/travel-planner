@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Dict
 from ml_logic.services.theme_city_service import ThemeCityService
 from ml_logic.services.booking_service import BookingService, VisualService
@@ -14,14 +14,16 @@ theme_city_service = ThemeCityService()
 booking_service = BookingService()
 visualization_service = VisualService()
 
+class Companion(BaseModel):
+    babies: int = Field(0, ge=0)
+    children: int = Field(0, ge=0)
+    adults: int = Field(0, ge=0)
+    seniors: int = Field(0, ge=0)
 class ThemePredictInfo(BaseModel):
     age: int
     gender: str
     nationality: str
-    babies: int
-    children: int
-    adults: int
-    elders: int
+    companion: Companion
     budget: str
 
 class ClimateDetail(BaseModel):
@@ -37,10 +39,7 @@ class MonthlyClimatePriceInfo(BaseModel):
     
 class BookingStrategyInfo(BaseModel):
     arrival_date: str
-    babies: int
-    children: int
-    adults: int
-    elders: int
+    companion: Companion
     country_name: str
   
 @router.post("/cities")
