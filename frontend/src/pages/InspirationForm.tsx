@@ -1,8 +1,7 @@
 import inspirationBg from '../assets/inspiration_bg.jpg';
 import { Controller, useForm } from 'react-hook-form';
 import { useMemo, useState } from 'react';
-import countryList from 'react-select-country-list'
-import Flatpickr from 'react-flatpickr';
+import countryList from 'react-select-country-list';
 import "flatpickr/dist/themes/airbnb.css";
 import AutoComplete from '../components/AutoComplete';
 import PersonSelector from '../components/PersonSelector';
@@ -19,6 +18,7 @@ export default function InspirationForm() {
       age: "",
       gender: "",
       nationality: "",
+      region: "all",
       companion: {
         babies: 0,
         children: 0,
@@ -49,6 +49,18 @@ export default function InspirationForm() {
     return item.label;
   };
 
+  // Region dropdown options
+  const regionOptions = [
+    { label: "Global", value: "all" },
+    { label: "Africa", value: "africa" },
+    { label: "Asia", value: "asia" },
+    { label: "Europe", value: "europe" },
+    { label: "Middle East", value: "middle_east" },
+    { label: "North America", value: "north_america" },
+    { label: "Oceania", value: "oceania" },
+    { label: "South America", value: "south_america" }
+  ]
+
   // Budget dropdown options
   const budgetOptions = [
     {label: "Low", value: "Low"},
@@ -64,6 +76,7 @@ export default function InspirationForm() {
         age: data.age,
         gender: data.gender,
         nationality: data.nationality,
+        region: data.region,
         companion: data.companion,
         budget: data.budget
       }
@@ -173,8 +186,37 @@ export default function InspirationForm() {
             <h3 className="text-left text-xl font-bold text-[#020f14] underline mb-3">
               Trip Information
             </h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <div className="flex flex-wrap justify-start">
+                <label htmlFor="region" className="w-full mb-1 text-left text-[#020f14]">
+                  Region
+                </label>
+                <Controller
+                  control={control}
+                  name="region"
+                  rules={{ required: true }}
+                  render={({field: {onChange, value}}) => (
+                    <div className="flex flex-wrap gap-3">
+                      {regionOptions.map((r) => (
+                        <button
+                          key={r.value}
+                          type="button"
+                          // call field.onChange to pass value to react-hook-form
+                          onClick={() => onChange(r.value)}
+                          className={`px-6 py-2 rounded-full border text-sm font-medium transition-all duration-300 ${
+                            value === r.value
+                              ? "bg-[#2096a8] border-[#2096a8] text-white shadow-lg shadow-[#2096a8]/40 scale-105"
+                              : "bg-white/10 border-white/20 text-white/70 hover:bg-white/20 hover:border-white/40"
+                          }`}
+                        >
+                          {r.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                />
+              </div>
+              <div className="flex flex-wrap justify-start content-start">
                 <label htmlFor="companion" className="w-full mb-1 text-left text-[#020f14]">
                   Companion
                 </label>
@@ -189,7 +231,7 @@ export default function InspirationForm() {
                   )}
                 />
               </div>
-              <div className="flex flex-wrap justify-start">
+              <div className="flex flex-wrap justify-start content-start">
                 <label htmlFor="budget" className="w-full mb-1 text-left text-[#020f14]">
                   Budget
                 </label>
