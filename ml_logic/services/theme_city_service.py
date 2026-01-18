@@ -56,7 +56,7 @@ class ThemeCityService:
         
         # Filter candidates by region
         user_region = user_input['region']
-        if user_region and user_region != "":
+        if user_region and user_region != "all":
             filtered_candidates = candidates[candidates['region'] == user_region].copy()
             if not filtered_candidates.empty:
                 candidates = filtered_candidates
