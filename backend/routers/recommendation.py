@@ -32,10 +32,7 @@ class ClimateDetail(BaseModel):
     temp: float
 
 class MonthlyClimatePriceInfo(BaseModel):
-    city: str
     country: str
-    region: str
-    short_description: str
     climate_calendar: Dict[str, List[ClimateDetail]]
     
 class BookingStrategyInfo(BaseModel):
@@ -83,7 +80,6 @@ async def get_monthly_climate_price(rec_city: MonthlyClimatePriceInfo):
         return {
             "status": "success",
             "data": {
-                "city_info": rec_city.city,
                 "chart": chart_data
             }
         }
