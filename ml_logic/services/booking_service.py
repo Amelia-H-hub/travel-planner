@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import joblib
 import plotly.graph_objects as go
 import plotly.io as pio
@@ -159,9 +160,10 @@ class VisualService:
         price_df = self.country_monthly_stats[self.country_monthly_stats['country'] == country_iso]
         climate_df = self. get_climate(rec_city.climate_calendar)
         
-        combined_df = pd.merge(price_df, climate_df, on='month', how='left')
+        combined_df = pd.merge(price_df, climate_df, on='month', how='right')
         combined_df['month_name'] = combined_df['month'].apply(lambda x: calendar.month_name[x])
         combined_df = combined_df.sort_values(by='month')
+        print(combined_df)
         
         return combined_df
     
@@ -169,65 +171,88 @@ class VisualService:
         plot_data = self.prepare_plot_data(rec_city)
         
         fig = go.Figure()
-
+        
+        bg_palette = {
+            'Cold': 'rgba(147, 197, 253, 0.2)',     # 淺天藍
+            'Cool': 'rgba(148, 163, 184, 0.2)',     # 灰藍色
+            'Pleasant': 'rgba(32, 150, 168, 0.2)', # 湖水綠
+            'Hot': 'rgba(244, 63, 94, 0.2)'       # 西瓜紅
+        }
+        
+        shapes = []
+        for _, row in plot_data.iterrows():
+            m = row['month']
+            c_type = row.get('climate')
+            
+            if pd.notna(c_type) and c_type in bg_palette:
+                shapes.append(dict(
+                    type='rect',
+                    xref='x',
+                    yref='paper',
+                    x0=m - 0.5, x1=m + 0.5,
+                    y0=0, y1=1,
+                    fillcolor=bg_palette[c_type],
+                    layer="below",
+                    line_width=0
+                ))
+        
         fig.add_trace(go.Scatter(
             x=plot_data['month'],
             y=plot_data['avg_adr'],
-            mode='lines',
-            line=dict(color='lightgrey', width=2),
-            name='Price Trend',
+            mode='lines+markers',
+            line=dict(
+                color='#1f3255',
+                width=3
+            ),
+            marker=dict(
+                size=10,
+                color='#1f3255',
+                line=dict(
+                    width=2,
+                    color='white'
+                )
+            ),
+            name='Avg Price',
             showlegend=False,
-            hoverinfo='skip' # Disable hover for this trace
+            # Define detailed hover information
+            customdata=np.stack((
+                plot_data['month_name'], 
+                plot_data['avg_temp'], 
+                plot_data['max_adr'].fillna(0), 
+                plot_data['min_adr'].fillna(0),
+                plot_data['climate'].fillna("Unknown")
+            ), axis=-1),
+            hovertemplate=(
+                "<b>Month: %{customdata[0]}</b><br>" +
+                "Avg Temp: %{customdata[1]}°C<br>" +
+                "Avg Price: €%{y:.2f}<br>" +
+                "Max Price: €%{customdata[2]:.2f}<br>" +
+                "Min Price: €%{customdata[3]:.2f}<br>" +
+                "<extra></extra>"
+            )
         ))
-        
-        palette = {
-            'Cold': '#a5c8ff',
-            'Cool': '#95e1d3',
-            'Pleasant': '#fce38a',
-            'Hot': '#f38181'
-        }
-        
-        unique_climates = [c for c in plot_data['climate'].unique() if pd.notna(c)]
-        
-        for climate_type in unique_climates:
-            df_sub = plot_data[plot_data['climate'] == climate_type]
-            if not df_sub.empty:
-                fig.add_trace(go.Scatter(
-                    x=df_sub['month'],
-                    y=df_sub['avg_adr'],
-                    mode='markers',
-                    name=climate_type,
-                    marker=dict(
-                        size=14,
-                        color=palette[climate_type],
-                        line=dict(width=1, color='black')
-                    ),
-                    # Define detailed hover information
-                    customdata=df_sub[['month_name', 'avg_temp', 'max_adr', 'min_adr']],
-                    hovertemplate=(
-                        "<b>Month: %{customdata[0]}</b><br>" +
-                        "Avg Temp: %{customdata[1]}°C<br>" +
-                        "Avg Price: €%{y:.2f}<br>" +
-                        "Max Price: €%{customdata[2]:.2f}<br>" +
-                        "Min Price: €%{customdata[3]:.2f}<br>" +
-                        "<extra></extra>"
-                    )
-                ))
-        
+                
         fig.update_layout(
+            shapes=shapes,
             title=f"Travel Insights: Hotel Price & Climate in {rec_city.country}",
             xaxis=dict(
                 title='Month',
                 tickmode='array',
                 tickvals=list(range(1, 13)),
-                ticktext=[calendar.month_abbr[i] for i in range(1, 13)]
+                ticktext=[calendar.month_abbr[i] for i in range(1, 13)],
+                range=[0.5, 12.5],
+                showgrid=False
             ),
             yaxis=dict(
-                title='Average Daily Reate (€)'
+                title='Average Daily Reate (€)',
+                gridcolor='rgba(0, 0, 0, 0.05)',
+                zeroline=False
             ),
             hovermode='closest',
-            template='plotly_white',
-            legend_title='Climate Type'
+            plot_bgcolor='rgba(0, 0, 0, 0)',
+            paper_bgcolor='rgba(0, 0, 0, 0)',
+            margin=dict(l=50, r=20, t=30, b=40),
+            showlegend=False
         )
         
         return json.loads(pio.to_json(fig))
