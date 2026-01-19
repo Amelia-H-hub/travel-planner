@@ -75,7 +75,7 @@ export default function InspirationForm() {
       state: {
         age: data.age,
         gender: data.gender,
-        nationality: data.nationality,
+        nationality: data.nationality.label,
         region: data.region,
         companion: data.companion,
         budget: data.budget

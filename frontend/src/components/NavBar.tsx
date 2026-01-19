@@ -17,8 +17,9 @@ export default function NavBar() {
   const pxClass = location.pathname === "/" ? "px-15" : "px-8";
   const mtClass = location.pathname === "/" ? "mt-12" : "mt-6";
   const titleFontSize = location.pathname === "/" ? "text-3xl" : "text-2xl";
-  const titleTextColor = location.pathname === "/" ? "text-white" : "text-[#1f3255]";
-  const titleTextShadow = location.pathname === "/" ? { textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)' } : {};
+  const isWhiteTextPage = ["/", "/inspirationForm"].includes(location.pathname);
+  const titleTextColor = isWhiteTextPage ? "text-white" : "text-[#1f3255]";
+  const titleTextShadow = isWhiteTextPage ? { textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)' } : {};
   const showSubTitle = location.pathname === "/";
   
   const logout = async () => {
