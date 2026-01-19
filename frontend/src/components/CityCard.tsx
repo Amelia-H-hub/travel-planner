@@ -103,7 +103,7 @@ export default function CityCard({ cityObj, chartData, isLoadingChart, onExpand 
             <div className="flex justify-between items-center">
               <p className="text-[13px] uppercase tracking-widest text-slate-400 font-bold">Climate Guide</p>
               <div className="flex gap-3">
-                {['Cold', 'Cool', 'Best', 'Hot'].map((type, idx) => {
+                {['Cold', 'Cool', 'Pleasant', 'Hot'].map((type, idx) => {
                   const colors = ['bg-blue-300', 'bg-slate-400', 'bg-[#2096a8]', 'bg-[#f43f5e]'];
                   return (
                     <div key={type} className="flex items-center gap-1 text-[13px] text-slate-400">
