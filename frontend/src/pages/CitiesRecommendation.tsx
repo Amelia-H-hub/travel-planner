@@ -111,7 +111,7 @@ export default function CitiesRecommendation() {
     } catch (error) {
       console.error("Fetch error:", error);
     } finally {
-      setLoadingCountries(prev => ({ ...prev, [country]: true}));
+      setLoadingCountries(prev => ({ ...prev, [country]: false}));
     }
   };
 

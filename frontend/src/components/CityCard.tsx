@@ -45,6 +45,35 @@ export default function CityCard({ cityObj, chartData, isLoadingChart, onExpand 
     setIsExpanded(!isExpanded);
   };
 
+  // Months missing hotel price
+  const getMissingMonthsText = () => {
+    if (!chartData || !chartData.data[0].customdata || chartData.data[0].customdata.length === 0) return null;
+
+    const priceTrace = chartData.data[0].customdata;
+    const months = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+
+    const missingIndices: number[] = [];
+
+    priceTrace.forEach((monthData: any[], index: number) => {
+      const price = monthData[2];
+      if (price === null || price == undefined || price === 0) {
+        missingIndices.push(index);
+      }
+    });
+
+    if (missingIndices.length === 0) return null;
+
+    const missingMonthNames = missingIndices.map(i => months[i]);
+
+    return missingMonthNames.length > 6
+      ? "Note: Some monthly price data is unavailable for this region."
+      : `Note: Hotel price data for ${missingMonthNames.join(", ")} is currently unavailable.`;
+  }
+  const missingText = getMissingMonthsText();
+
   return (
     <div className="w-full bg-white/80 backdrop-blur-md border border-white rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(31,50,85,0.1)] transition-all duration-300 hover:shadow-[0_20px_60px_rgba(31,50,85,0.15)] mb-6">
       
@@ -131,11 +160,20 @@ export default function CityCard({ cityObj, chartData, isLoadingChart, onExpand 
                 <span className="w-1.5 h-6 bg-[#2096a8] rounded-full"></span>
                 Annual Climate & Price Trend
               </h4>
-              <div className="w-full h-72 bg-white rounded-3xl border border-slate-100 shadow-sm p-4">
+              <div className="flex flex-col w-full h-84 bg-white rounded-3xl border border-slate-100 shadow-sm p-4">
                 {isLoadingChart ? (
                   <div>Loading Chart...</div>
                 ) : (
-                  <PlotlyChart chartData={chartData} />
+                  <>
+                    <div className="flex-grow min-h-0"> {/* 👈 包裹圖表並允許它縮放 */}
+                      <PlotlyChart chartData={chartData} />
+                    </div>
+                    {missingText && (
+                      <p className="mt-2 text-[12px] text-slate-400 italic font-medium px-2">
+                        <span className="text-[#2096a8]/60 mr-1">ℹ️</span> {missingText}
+                      </p>
+                    )}
+                  </>
                 )}
               </div>
             </div>
