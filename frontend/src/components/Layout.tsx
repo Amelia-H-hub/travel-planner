@@ -6,7 +6,6 @@ import { LoginModalContext } from '../context/LoginModalContext';
 import { Toaster } from "@/components/ui/sonner"
 
 export default function Layout() {
-  const location = useLocation();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   return (
