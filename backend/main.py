@@ -11,7 +11,6 @@ from backend.routers import home
 from backend.routers import schedule
 from backend.routers import auth
 from backend.routers import recommendation
-from mangum import Mangum
 
 load_dotenv()
 
@@ -59,6 +58,3 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 async def global_exception_handler(request: Request, exc: Exception):
     print(f"❌ Unexpected error: {exc}")
     return error_response(500, "Internal server error")
-
-# Lambda handler
-handler = Mangum(app)
