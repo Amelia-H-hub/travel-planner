@@ -119,22 +119,22 @@ export default function PersonSelector({ value, onChange }: PersonSelectorProps)
         onClick={() => {
           setOpen(!open);
         }}
-        className={`w-full text-[#3C3C3C] px-6 py-5 !bg-white !border-solid !border-1 !border-gray-500 rounded-lg max-h-[67px] ${isMultiline && displayText ? 'text-sm': 'text-lg'}`}
+        className={`w-full text-[#3C3C3C] px-6 py-5 bg-slate-200/60! !border-solid !border-1 !border-gray-500 rounded-lg max-h-[67px] ${isMultiline && displayText ? 'text-sm': 'text-lg'}`}
       >
         {displayText ? displayText : 'Click to select'}
       </button>
 
       {open && (
-        <div className="absolute z-10 w-full bg-white border p-4 space-y-3 rounded-lg shadow-sm">
+        <div className="absolute z-10 w-full bg-slate-200/60! border border-gray-500! p-4 space-y-3 rounded-lg shadow-sm">
           {groups.map((group) => (
             <div key={group.key} className="flex justify-between items-center">
-              <span className="w-3/5 !bg-white text-[#3C3C3C] text-base">{group.label}</span>
+              <span className="w-3/5 bg-transparent! text-[#3C3C3C] text-base">{group.label}</span>
               <button
                 type="button"
                 onClick={() => {
                   handleChange(group.key, -1);
                 }}
-                className="w-6 h-6 flex justify-center items-center !bg-white text-[#646cff] !border-[#646cff] rounded-full hover:!bg-gray-200"
+                className="w-6 h-6 flex justify-center items-center bg-slate-200/60! text-[#646cff] !border-[#646cff] rounded-full hover:!bg-gray-200"
               >
                 -
               </button>
@@ -143,7 +143,7 @@ export default function PersonSelector({ value, onChange }: PersonSelectorProps)
                 value={counts[group.key]}
                 onFocus={(e) => e.target.select()}
                 onChange={(e) => handleInputChange(group.key, e.target.value)}
-                className="w-12 text-center border-b border-gray-300 focus:border-[#646cff] focus:outline-none bg-transparent text-[#3C3C3C]"
+                className="w-12 text-center border-b border-gray-600 focus:border-[#646cff] focus:outline-none bg-transparent text-[#3C3C3C]"
                 min="0"
               >
               </input>
@@ -152,7 +152,7 @@ export default function PersonSelector({ value, onChange }: PersonSelectorProps)
                 onClick={() => {
                   handleChange(group.key, +1);
                 }}
-                className="w-6 h-6 flex justify-center items-center !bg-white text-[#646cff] !border-[#646cff] rounded-full hover:!bg-gray-200"
+                className="w-6 h-6 flex justify-center items-center bg-slate-200/60! text-[#646cff] !border-[#646cff] rounded-full hover:!bg-gray-200"
               >
                 +
               </button>

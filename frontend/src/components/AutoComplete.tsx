@@ -108,15 +108,15 @@ export default function AutoComplete({
         }}
         onBlur={inputBlur}
         placeholder={placeholder}
-        className="w-full text-[#3C3C3C] px-6 py-5 bg-white rounded-lg border-solid border-1 border-gray-500"
+        className="w-full text-[#3C3C3C] px-6 py-5 bg-slate-200/60! rounded-lg border-solid border-1 border-gray-500!"
       >
       </input>
       {showDropdown && filteredSuggestions.length > 0 && (
-        <ul className="absolute z-10 max-h-[250px] overflow-y-scroll bg-white border border-gray-200 w-full rounded mt-1 shadow">
+        <ul className="absolute z-10 max-h-[250px] overflow-y-auto custom-scrollbar bg-slate-200/60! border border-gray-500! w-full rounded mt-1 shadow backdrop-blur-sm">
           {filteredSuggestions.map((item, index) => (
             <li
               key={index}
-              className="p-2 text-black text-left hover:bg-gray-100 cursor-pointer"
+              className="p-2 text-[#3C3C3C] text-left hover:bg-white/30 cursor-pointer"
               onClick={() => handleSelect(item)}
             >
               {displayFormat ? displayFormat(item) : item}

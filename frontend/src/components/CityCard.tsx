@@ -117,7 +117,7 @@ export default function CityCard({
   };
 
   return (
-    <div className="w-full bg-white/80 backdrop-blur-md border border-white rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(31,50,85,0.1)] transition-all duration-300 hover:shadow-[0_20px_60px_rgba(31,50,85,0.15)] mb-6">
+    <div className="w-full bg-white/80! backdrop-blur-md border border-white rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(31,50,85,0.1)] transition-all duration-300 hover:shadow-[0_20px_60px_rgba(31,50,85,0.15)] mb-6">
       
       {/* 橫式主體區 */}
       <div className="flex flex-col lg:flex-row">
@@ -129,7 +129,7 @@ export default function CityCard({
               <h3 className="text-left text-4xl font-extrabold text-[#1f3255] tracking-tight">
                 {cityObj.city}
               </h3>
-              <span className="bg-[#2096a8] text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+              <span className="bg-[#2096a8]! text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
                 {cityObj.budget_level}
               </span>
             </div>
@@ -148,7 +148,7 @@ export default function CityCard({
               <p className="text-[13px] uppercase tracking-widest text-slate-400 font-bold">Climate Guide</p>
               <div className="flex gap-3">
                 {['Cold', 'Cool', 'Pleasant', 'Hot'].map((type, idx) => {
-                  const colors = ['bg-blue-300', 'bg-slate-400', 'bg-[#2096a8]', 'bg-[#f43f5e]'];
+                  const colors = ['bg-blue-300!', 'bg-slate-400!', 'bg-[#2096a8]!', 'bg-[#f43f5e]!'];
                   return (
                     <div key={type} className="flex items-center gap-1 text-[13px] text-slate-400">
                       <span className={`w-1.5 h-1.5 rounded-full ${colors[idx]}`}></span>{type}
@@ -166,11 +166,11 @@ export default function CityCard({
                 const isCool = cityObj.climate_calendar.Cool.some(item => item.month === m);
                 const isCold = cityObj.climate_calendar.Cold.some(item => item.month === m);
 
-                let bgColor = "bg-slate-100";
-                if (isHot) bgColor = "bg-[#f43f5e]";
-                else if (isPleasant) bgColor = "bg-[#2096a8]";
-                else if (isCool) bgColor = "bg-slate-400";
-                else if (isCold) bgColor = "bg-blue-300";
+                let bgColor = "bg-slate-100!";
+                if (isHot) bgColor = "bg-[#f43f5e]!";
+                else if (isPleasant) bgColor = "bg-[#2096a8]!";
+                else if (isCool) bgColor = "bg-slate-400!";
+                else if (isCold) bgColor = "bg-blue-300!";
 
                 return (
                   <div key={m} className="flex-1 flex flex-col items-center gap-1.5 group">
@@ -186,7 +186,7 @@ export default function CityCard({
 
           <button 
             onClick={handleToggle}
-            className="w-full lg:w-fit px-10 py-3 bg-[#2096a8] hover:bg-[#1a7d8c] text-white rounded-2xl text-base font-bold transition-all shadow-lg shadow-[#2096a8]/20"
+            className="w-full lg:w-fit px-10 py-3 bg-[#2096a8]! hover:bg-[#1a7d8c]! text-white rounded-2xl text-base font-bold transition-all shadow-lg shadow-[#2096a8]/20"
           >
             {isExpanded ? "Close Strategy" : "🏨 Hotel Booking Strategy"}
           </button>
@@ -201,7 +201,7 @@ export default function CityCard({
           <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             <div className="lg:col-span-2 space-y-4">
               <h4 className="text-[#1f3255] font-bold flex items-center gap-2">
-                <span className="w-1.5 h-6 bg-[#2096a8] rounded-full"></span>
+                <span className="w-1.5 h-6 bg-[#2096a8]! rounded-full"></span>
                 Annual Climate & Price Trend
               </h4>
               <div className="flex flex-col w-full h-84 bg-white rounded-3xl border border-slate-100 shadow-sm p-4">
@@ -241,7 +241,7 @@ export default function CityCard({
                         disableMobile: true,
                         minDate: "today"
                       }}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-[#1f3255] outline-none focus:ring-2 focus:ring-[#2096a8]/20"
+                      className="w-full px-4 py-3 bg-slate-50! border border-slate-100 rounded-xl text-[#1f3255] outline-none focus:ring-2 focus:ring-[#2096a8]/20"
                       placeholder="Select Arrival Date"
                     />
                   </div>
@@ -251,7 +251,7 @@ export default function CityCard({
                         type="checkbox" 
                         checked={isFlexibleYear} 
                         onChange={(e) => setIsFlexibleYear(e.target.checked)}
-                        className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-slate-200 checked:bg-[#2096a8] checked:border-[#2096a8] transition-all"
+                        className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-slate-200 checked:bg-[#2096a8]! checked:border-[#2096a8] transition-all"
                       />
                       {/* Checkmark Icon */}
                       <svg className="absolute h-3.5 w-3.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none left-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -269,7 +269,7 @@ export default function CityCard({
                 <button 
                   onClick={handleGetAdvice}
                   disabled={isLoadingAdvice}
-                  className="w-full py-4 bg-[#1f3255] text-white text-[16px] font-bold rounded-2xl hover:bg-black transition-all shadow-xl"
+                  className="w-full py-4 bg-[#1f3255]! text-white text-[16px] font-bold rounded-2xl hover:bg-black! transition-all shadow-xl"
                 >
                   {isLoadingAdvice ? "Analyzing..." : "Get Hotel Booking Advice"}
                 </button>
@@ -307,7 +307,7 @@ export default function CityCard({
                     
                     <div className="relative z-10 space-y-4">
                       <p className="text-xs font-bold text-[#2096a8] uppercase tracking-widest flex items-center gap-2">
-                        <span className="w-2 h-2 bg-[#2096a8] rounded-full animate-pulse" />
+                        <span className="w-2 h-2 bg-[#2096a8]! rounded-full animate-pulse" />
                         AI Strategy Insight
                       </p>
 
@@ -358,7 +358,7 @@ export default function CityCard({
                       <h5 className="text-[#1f3255] font-black text-xl tracking-tight">
                         Booking Strategies
                       </h5>
-                      <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest bg-slate-100 px-2 py-1 rounded">
+                      <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest bg-slate-100! px-2 py-1 rounded">
                         3D Model Predicted
                       </span>
                     </div>
@@ -370,21 +370,21 @@ export default function CityCard({
                       const config = {
                         best_cp: {
                           label: "Best Value",
-                          color: "bg-[#2096a8]",
+                          color: "bg-[#2096a8]!",
                           icon: "💎",
                           sub: "Absolute lowest price across 12 months",
                           timeframe: "Yearly Best"
                         },
                         month_priority: {
                           label: "Stay in your Month",
-                          color: "bg-[#f43f5e]",
+                          color: "bg-[#f43f5e]!",
                           icon: "🌟",
                           sub: "Optimized for your chosen month",
                           timeframe: "Specific Month"
                         },
                         lt_priority: {
                           label: "The Patient Saver",
-                          color: "bg-[#1f3255]",
+                          color: "bg-[#1f3255]!",
                           icon: "⏰",
                           sub: "Wait 1-4 months for major savings",
                           timeframe: "Nearby Alternative"
@@ -408,7 +408,7 @@ export default function CityCard({
                             </div>
 
                             {/* Timeframe */}
-                            <div className="shrink-0 px-2 py-0.5 rounded-md bg-slate-50 border border-slate-100 text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">
+                            <div className="shrink-0 px-2 py-0.5 rounded-md bg-slate-50! border border-slate-100 text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">
                               {item.timeframe}
                             </div>
                           </div>
@@ -464,9 +464,9 @@ export default function CityCard({
                                   {(value.risk * 100).toFixed(1)}%
                                 </span>
                               </div>
-                              <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                              <div className="w-full h-1.5 bg-slate-100! rounded-full overflow-hidden">
                                 <div 
-                                  className={`h-full transition-all duration-1000 ${value.risk >= 0.7 ? "bg-[#dc3545]" : (value.risk >= 0.3 ? "bg-[#ffc107]" : "bg-[#28a745]")}`}
+                                  className={`h-full transition-all duration-1000 ${value.risk >= 0.7 ? "bg-[#dc3545]!" : (value.risk >= 0.3 ? "bg-[#ffc107]!" : "bg-[#28a745]!")}`}
                                   style={{ width: `${value.risk * 100}%` }}
                                 />
                               </div>
