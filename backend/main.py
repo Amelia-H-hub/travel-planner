@@ -22,7 +22,6 @@ if not secret_key:
 app = FastAPI(
     docs_url="/docs", # Set docs_url to /docs for compatibility with AWS Lambda proxy integration
     redoc_url="/redoc", # Set redoc_url to /redoc for compatibility with AWS Lambda proxy integration
-    root_path="/dev" # Set root_path to /dev for compatibility with AWS Lambda proxy integration
 )  
 
 # Allow frontend request from different network
@@ -35,12 +34,12 @@ app.add_middleware(
 )
 
 # Session middleware
-app.add_middleware(
-    SessionMiddleware,
-    secret_key=secret_key,
-    max_age=60*60*24*7,  # 7 days
-    session_cookie="session"
-)
+# app.add_middleware(
+#     SessionMiddleware,
+#     secret_key=secret_key,
+#     max_age=60*60*24*7,  # 7 days
+#     session_cookie="session"
+# )
 
 # router
 app.include_router(home.router)
