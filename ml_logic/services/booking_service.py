@@ -13,43 +13,81 @@ class BookingService:
     def __init__(self):
         self.risk_model = joblib.load(CANCELLATION_RISK_MODEL_PATH)
         self.price_lookup = pd.read_csv(PRICE_LOOKUP_PATH)
-        self.bins = [0] + list(LEAD_TIME_CONFIG.values())
-        self.labels = list(LEAD_TIME_CONFIG.keys())
+        self.lt_map = LEAD_TIME_CONFIG
+        self.lt_steps = sorted(LEAD_TIME_CONFIG.values())
         self.visual_service = VisualService()
     
-    def get_lt_bucket_name(self, lt):
-        return pd.cut([lt], bins=self.bins, labels=self.labels, include_lowest=True)[0]
-    
-    def get_complete_risk_price_report(self, input_data):
-        test_lead_times = list(LEAD_TIME_CONFIG.values())
-        test_months = range(1, 13)
-        results = []
+    def get_test_lts(self, user_lt, is_flexible_year=False):
+        if user_lt <= 30: step = 1
+        elif user_lt <= 90: step = 3
+        elif user_lt <= 180: step = 7
+        elif user_lt <= 365: step = 14
+        else: step = 28
         
+        test_lts = list(range(1, user_lt + 1, step))
+        
+        if is_flexible_year:
+            future_lts = list(range(user_lt + 28, user_lt + 366, 28))
+            test_lts.extend(future_lts)
+        
+        test_lts.append(user_lt)
+        return sorted(list(set(test_lts)))
+    
+    def get_interpolated_price(self, country, month, lt):
+        city_prices = self.price_lookup[
+            (self.price_lookup['country'] == country) &
+            (self.price_lookup['arrival_date_month_num'] == month)
+        ].copy()
+        
+        if city_prices.empty: return 100
+        
+        city_prices['lt_days'] = city_prices['lead_time_bucket'].map(self.lt_map)
+        city_prices = city_prices.sort_values('lt_days')
+        
+        estimated_price = np.interp(
+            lt,
+            city_prices['lt_days'].values,
+            city_prices['adr'].values
+        )
+        
+        return estimated_price
+    
+    def get_complete_risk_price_report(self, input_data, is_flexible_year=False):
+        target_country = input_data['country'].values[0]
+        
+        user_lt = int(input_data['lead_time'].iloc[0])
+        test_lts = self.get_test_lts(user_lt, is_flexible_year)
+        
+        user_month = input_data['arrival_date_month_num'].iloc[0]
+        test_months = range(1, 13)
+        
+        results = []
         for m in test_months:
-            for lt in test_lead_times:
+            lts_to_check = test_lts if m == user_month else self.lt_steps
+            
+            for lt in lts_to_check:
                 temp_df = input_data.copy()
                 temp_df['arrival_date_month_num'] = m
                 temp_df['lead_time'] = lt
+                
                 # Predict risk
                 prob = self.risk_model.predict_proba(temp_df)[0][1]
-                # Look up price
-                bucket = self.get_lt_bucket_name(lt)
-                price_row = self.price_lookup[(self.price_lookup['arrival_date_month_num'] == m) &
-                                        (self.price_lookup['lead_time_bucket'] == bucket)]
-                avg_price = price_row['adr'].values[0] if not price_row.empty else 100
+                
+                # Calculate price
+                price = self.get_interpolated_price(target_country, m, lt)
                 
                 results.append({
                     'month': m,
                     'lt': lt,
                     'risk': prob,
-                    'price': avg_price
+                    'price': price
                 })
         
         res_df = pd.DataFrame(results)
         
         return res_df
     
-    def get_advice_by_weight(self, candidates, weight_risk=1.5, weight_price=1.2):
+    def get_advice_by_weight(self, candidates, weight_risk, weight_price):
         if candidates.empty:
             return None
         
@@ -60,10 +98,11 @@ class BookingService:
         
         return advice
     
-    def get_stategic_advice(self, input_data, isThisYear=True):
-        res_df = self.get_complete_risk_price_report(input_data)
+    def get_stategic_advice(self, input_data, w_risk, w_price, is_flexible_year=False):
+        res_df = self.get_complete_risk_price_report(input_data, is_flexible_year)
         user_lt = input_data['lead_time'].iloc[0]
         user_month = input_data['arrival_date_month_num'].iloc[0]
+        avg_risk = res_df['risk'].mean()
         yearly_avg_price = res_df['price'].mean()
         
         # normalization
@@ -73,32 +112,81 @@ class BookingService:
         price_min, price_max = res_df['price'].min(), res_df['price'].max()
         res_df['price_norm'] = (res_df['price'] - price_min) / (price_max - price_min)
             
-        # 1. Best CP value
-        # risk < 30% & price < yearly_avg_price
-        cp_candidates = res_df[(res_df['risk'] < 0.3) & (res_df['price'] < yearly_avg_price)].copy()
-        cp_advice = self.get_advice_by_weight(cp_candidates)
+        # 1. Best CP value in an year
+        cp_advice = self.get_advice_by_weight(res_df[res_df['lt'] <= 365], w_risk, w_price)
         
-        # 2. Same or longer lead time
-        target_months = [(int(user_month) + i - 1) % 12 + 1 for i in range(0, 4)]
-        lt_priority = res_df[(res_df['lt'] >= user_lt) & (res_df['month'].isin(target_months))].copy()
-        lt_advice = self.get_advice_by_weight(lt_priority)
+        # 2. Same month
+        this_year_options = res_df[(res_df['month'] == user_month) & (res_df['lt'] <= user_lt)]
+        next_year_options = res_df[(res_df['month'] == user_month) & (res_df['lt'] > user_lt)]
         
-        # 3. Same month
-        if isThisYear:
-            month_priority = res_df[(res_df['month'] == user_month) & (res_df['lt'] <= user_lt)].copy()
+        best_this_year = self.get_advice_by_weight(this_year_options, w_risk, w_price)
+        
+        if is_flexible_year and not next_year_options.empty:
+            best_next_year = self.get_advice_by_weight(next_year_options, w_risk, w_price)
+            
+            price_saving_ratio = (best_this_year['price'] - best_next_year['price']) / best_this_year['price']
+            
+            if price_saving_ratio > 0.15:
+                month_advice = best_next_year
+                month_advice['is_next_year'] = True
+            else:
+                month_advice = best_this_year
+                month_advice['is_next_year'] = False
         else:
-            month_priority = res_df[res_df['month'] == user_month].copy()
-        month_advice = self.get_advice_by_weight(month_priority)
+            month_advice = best_this_year
+            month_advice['is_next_year'] = False
+        
+        # 3. Same or longer lead time
+        future_months = [(int(user_month) + i - 1) % 12 + 1 for i in range(1, 4)]
+        lt_candidates = res_df[
+            (res_df['month'].isin(future_months)) &
+            (res_df['lt'] > user_lt)
+        ].copy()
+        
+        if cp_advice is not None:
+            lt_candidates = lt_candidates[
+                ~((lt_candidates['month'] == cp_advice['month']) &
+                  (lt_candidates['lt'] == cp_advice['lt']))
+            ]
+        
+        lt_advice = self.get_advice_by_weight(lt_candidates, w_risk, w_price)
         
         # Plot bubble chart
         bubble_chart = self.visual_service.plot_bubble_recommendation(res_df, cp_advice, lt_advice, month_advice)
         
-        return cp_advice, lt_advice, month_advice, bubble_chart
+        return cp_advice, month_advice, lt_advice, bubble_chart
+    
+    def get_risk_price_weight(self, companion):
+        total_people = companion.get('babies', 0) + companion.get('children', 0) + companion.get('adults', 0) + companion.get('seniors', 0)
+        is_family = (companion.get('babies', 0) + companion.get('children', 0) + companion.get('seniors', 0)) > 0
+        
+        # Default weights
+        w_risk = 1.2
+        w_price = 1.2
+        
+        if is_family:
+            w_risk = 1.8
+            w_price = 1.0
+        elif total_people > 4:
+            w_risk = 1.5
+            w_price = 1.2
+        else:
+            w_risk = 1.0
+            w_price = 1.8
+        
+        return w_risk, w_price
     
     def get_hotel_booking_strategy(self, user_input):
+        w_risk, w_price = self.get_risk_price_weight(user_input['companion'])
+        is_flexible_year = user_input['is_flexible_year']
+        
+        # Format data for predicting risk
         current_input = pd.DataFrame([user_input]) if isinstance(user_input, dict) else user_input.copy()
         current_input['lead_time'] = calculate_lead_time(user_input['arrival_date'])
         current_input['arrival_date_month_num'] = get_month(user_input['arrival_date'])
+        current_input['adults'] = user_input['companion'].get('adults', 0) + user_input['companion'].get('seniors', 0)
+        current_input['children'] = user_input['companion'].get('children', 0)
+        current_input['babies'] = user_input['companion'].get('babies', 0)
         current_input['country'] = get_country_iso_code(user_input['country_name'])
         current_input['deposit_type'] = 'No Deposit' # Default
         current_input['customer_type'] = determine_customer_type(
@@ -111,15 +199,15 @@ class BookingService:
         donut_chart = self.visual_service.draw_risk_donut(user_prob)
         
         # Get advices
-        cp_advice, lt_advice, month_advice, bubble_chart = self.get_stategic_advice(current_input)
+        cp_advice, month_advice, lt_advice, bubble_chart = self.get_stategic_advice(current_input, w_risk, w_price, is_flexible_year)
         
         return {
             "donut_chart": donut_chart,
             "current_risk": user_prob,
             "recommendations": {
                 "best_cp": cp_advice.to_dict() if cp_advice is not None else None,
-                "lt_priority": lt_advice.to_dict() if lt_advice is not None else None,
-                "month_priority": month_advice.to_dict() if month_advice is not None else None
+                "month_priority": month_advice.to_dict() if month_advice is not None else None,
+                "lt_priority": lt_advice.to_dict() if lt_advice is not None else None
             },
             "bubble_chart": bubble_chart
         }
@@ -287,22 +375,14 @@ class VisualService:
             text=f'<b>{risk_percent:.1f}%</b>',
             x=0.5,
             y=0.5,
-            font_size=32,
+            font_size=28,
             font_color=risk_color,
             showarrow=False
         )
         
         fig.update_layout(
-            title={
-                'text': "Booking Cancellation Risk",
-                'x': 0.5,
-                'y': 0.9,
-                'xanchor': 'center',
-                'yanchor': 'top'
-            },
-            margin=dict(t=80, b=10, l=10, r=10),
-            height=300,
-            width=300,
+            autosize=True,
+            margin=dict(t=0, b=0, l=0, r=0),
             paper_bgcolor='rgba(0, 0, 0, 0)',
             plot_bgcolor='rgba(0, 0, 0, 0)'
         )
@@ -380,7 +460,6 @@ class VisualService:
             )
         
         fig.update_layout(
-            title="<b>AI Recommendation: Risk vs. Price Strategy</b>",
             xaxis_title="Estimated Price (ADR)",
             yaxis_title="Cancellation Risk (%)",
             template="plotly_white",

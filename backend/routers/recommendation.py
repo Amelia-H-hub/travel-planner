@@ -37,6 +37,7 @@ class MonthlyClimatePriceInfo(BaseModel):
     
 class BookingStrategyInfo(BaseModel):
     arrival_date: str
+    is_flexible_year: bool
     companion: Companion
     country_name: str
   

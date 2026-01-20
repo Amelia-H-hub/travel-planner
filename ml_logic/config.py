@@ -73,6 +73,7 @@ LEAD_TIME_CONFIG = {
     'Last Minute': 14,
     'Short-term': 30,
     'Medium-term': 90,
-    'Long-term': 180,
+    'Half-year': 180,
+    'Long-term': 365,
     'Very Long-term': 730   # Maximum of lead_time is 709
 }
