@@ -4,6 +4,7 @@ import Flatpickr from 'react-flatpickr';
 import "flatpickr/dist/themes/airbnb.css";
 import AutoComplete from '../components/AutoComplete';
 import PersonSelector from '../components/PersonSelector';
+import FloatingInspirationBtn from '../components/FloatingInspirationBtn'; 
 import { ArrowBigRightDash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '@/constants';
@@ -147,13 +148,16 @@ export default function HomePage() {
             </div>
           </div>
         </form>
-        <div className="mt-8">
-          <p className="text-white text-3xl font-bold">
-            Need some inspiration?
+        <FloatingInspirationBtn />
+        {/* <div className="mt-8">
+          <p 
+            onClick={() => navigate('/inspiration')}
+            className="cursor-pointer underline text-white text-3xl font-bold"
+          >
+            Need some inspiration? ✨
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
-    
   )
 }
