@@ -3,9 +3,9 @@ import pandas as pd
 import numpy as np
 import requests
 import io
-from ..config import THEME_MODEL_PATH, THEME_PREPROCESSOR_PATH, THEME_LE_PATH, CITY_MODEL_PATH, CITY_SCALER_PATH, CITY_DATA_PATH, THEME_FEATURES, BUDGET_MAP, CITY_FEATURES, WEIGHT_CONFIG, CLIMATE_MODES, IS_LOCAL
-from ..processors.geo_tools import get_city_climate_calendar
-from ..processors.data_utils import classify_travel_companion
+from ml_logic.config import THEME_MODEL_PATH, THEME_PREPROCESSOR_PATH, THEME_LE_PATH, CITY_MODEL_PATH, CITY_SCALER_PATH, CITY_DATA_PATH, THEME_FEATURES, BUDGET_MAP, CITY_FEATURES, WEIGHT_CONFIG, CLIMATE_MODES, IS_LOCAL
+from ml_logic.processors.geo_tools import get_city_climate_calendar
+from ml_logic.processors.data_utils import classify_travel_companion
 
 class ThemeCityService:
     # Load models and data    

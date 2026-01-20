@@ -7,9 +7,9 @@ import calendar
 import json
 import requests
 import io
-from ..config import CANCELLATION_RISK_MODEL_PATH, PRICE_LOOKUP_PATH, COUNTRY_MONTHLY_STATS_PATH, RISK_FEATURES, LEAD_TIME_CONFIG, IS_LOCAL
-from ..processors.data_utils import calculate_lead_time, get_month, determine_customer_type
-from ..processors.geo_tools import get_country_iso_code
+from ml_logic.config import CANCELLATION_RISK_MODEL_PATH, PRICE_LOOKUP_PATH, COUNTRY_MONTHLY_STATS_PATH, RISK_FEATURES, LEAD_TIME_CONFIG, IS_LOCAL
+from ml_logic.processors.data_utils import calculate_lead_time, get_month, determine_customer_type
+from ml_logic.processors.geo_tools import get_country_iso_code
 
 class BookingService:
     def __init__(self):
