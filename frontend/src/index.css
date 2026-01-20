@@ -114,6 +114,20 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
+/* 自定義下拉選單的捲軸樣式 */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px; /* 捲軸寬度 */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* 軌道設為透明，這樣就不會有白邊了 */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5); /* 捲軸本體設為淡灰色 */
+  border-radius: 20px;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -210,6 +224,89 @@ ul::-webkit-scrollbar-track {
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;}
+    @apply border-border outline-ring/50;
+  }
   body {
-    @apply bg-background text-foreground;}}
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Month & Year background */
+.flatpickr-month {
+  background: #2096a8 !important;
+  color: #fff !important;
+  fill: #fff !important;
+  height: 34px !important; /* 有些主題會跑掉，固定一下高度 */
+  border-radius: 12px 12px 0 0 !important;
+}
+
+/* Previous & next month arrow background */
+.flatpickr-prev-month, 
+.flatpickr-next-month {
+  background: #2096a8 !important; /* 強制覆蓋掉原本的藍色 */
+  fill: #ffffff !important;
+  padding: 10px !important;
+}
+.flatpickr-prev-month {
+  border-top-left-radius: 12px !important; /* 左上角圓圓 */
+}
+.flatpickr-next-month {
+  border-top-right-radius: 12px !important; /* 右上角圓圓 */
+}
+
+/* Previous & next month arrow */
+.flatpickr-prev-month svg, 
+.flatpickr-next-month svg {
+  fill: #ffffff !important;
+}
+
+/* Previous & next month arrow hover */
+.flatpickr-prev-month:hover, 
+.flatpickr-next-month:hover {
+  background: rgba(255, 255, 255, 0.2) !important; /* 淡淡的磨砂白 */
+}
+
+.flatpickr-prev-month:hover svg, 
+.flatpickr-next-month:hover svg {
+  fill: #18707e !important; /* 滑過時箭頭變松石綠 */
+}
+
+/* 徹底消滅可能存在的偽元素藍色背景 */
+.flatpickr-month:before,
+.flatpickr-month:after {
+  display: none !important;
+}
+
+/* Month & Year text */
+.flatpickr-current-month, 
+.flatpickr-current-month .flatpickr-monthDropdown-months,
+.flatpickr-current-month input.cur-year {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+  background: #2096a8 !important;
+}
+
+
+/* Weekdays (Mon, Tue...) background */
+.flatpickr-weekdays {
+  background: #2096a8 !important;
+}
+
+/* Weekdays (Mon, Tue...) text */
+span.flatpickr-weekday {
+  background: #2096a8 !important;
+  color: #ffffff !important;
+  font-weight: bold !important;
+}
+
+/* Selected date */
+.flatpickr-day.selected, 
+.flatpickr-day.startRange, 
+.flatpickr-day.endRange, 
+.flatpickr-day.selected:hover, 
+.flatpickr-day.nextMonthDay.selected, 
+.flatpickr-day.prevMonthDay.selected {
+  background: #18707e !important;
+  border-color: #18707e !important;
+  color: #fff !important;
+}

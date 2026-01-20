@@ -117,7 +117,7 @@ export default function InspirationForm() {
                         type="number"
                         autoComplete="age"
                         placeholder="Enter your age"
-                        className="w-full px-4 py-5 focus:outline-none bg-white border-solid border-1 border-gray-500 rounded-lg text-gray-500"
+                        className="w-full px-4 py-5 focus:outline-none bg-slate-200/60! border-solid border-1 border-gray-500 rounded-lg text-[#3C3C3C]"
                       />
                       {fieldState.error && (
                         <p className="w-full text-red-500 text-left mt-1">{fieldState.error.message}</p>
@@ -138,7 +138,7 @@ export default function InspirationForm() {
                     <div className="w-full">
                       <select
                         {...field}
-                        className="w-full px-4 py-5 focus:outline-none border-solid border-1 border-gray-500 rounded-lg text-gray-500 bg-white"
+                        className="w-full px-4 py-5 bg-slate-200/60! focus:outline-none border-solid border-1 border-gray-500 rounded-lg text-[#3C3C3C]"
                       >
                         <option value="" disabled>Select Gender</option>
                         {genderOptions.map((opt) => (
@@ -203,8 +203,8 @@ export default function InspirationForm() {
                           onClick={() => onChange(r.value)}
                           className={`px-6 py-2 rounded-full border text-sm font-medium transition-all duration-300 ${
                             value === r.value
-                              ? "bg-[#2096a8] border-[#2096a8] text-white shadow-lg shadow-[#2096a8]/40 scale-105"
-                              : "bg-white/10 border-white/20 text-white/70 hover:bg-white/20 hover:border-white/40"
+                              ? "bg-[#2096a8]! border-[#2096a8] text-white shadow-lg shadow-[#2096a8]/40 scale-105"
+                              : "bg-slate-200/60! border-white/20 text-[#666666] hover:bg-white/20 hover:border-white/40"
                           }`}
                         >
                           {r.label}
@@ -241,7 +241,7 @@ export default function InspirationForm() {
                     <div className="w-full">
                       <select
                         {...field}
-                        className="w-full px-4 py-5 focus:outline-none border-solid border-1 border-gray-500 rounded-lg text-gray-500 bg-white"
+                        className="w-full px-4 py-5 bg-slate-200/60! focus:outline-none border-solid border-1 border-gray-500 rounded-lg text-[#3C3C3C]"
                       >
                         <option value="" disabled>Select Budget Level</option>
                         {budgetOptions.map((opt) => (
@@ -261,7 +261,7 @@ export default function InspirationForm() {
             </div>
           </div>
           <div className="mt-10 flex justify-end">
-            <button type="submit" className="group bg-[#2096a8] hover:bg-[#1a7a8a] text-white px-12 py-5 rounded-full text-xl font-bold transition-all shadow-lg flex items-center gap-3">
+            <button type="submit" className="group bg-[#2096a8]! hover:bg-[#1a7a8a] text-white px-12 py-5 rounded-full text-xl font-bold transition-all shadow-lg flex items-center gap-3">
               Take Me Somewhere New
               <ArrowBigRightDash className='pl-2 w-10 group-hover:translate-x-2 transition-transform'/>
             </button>
