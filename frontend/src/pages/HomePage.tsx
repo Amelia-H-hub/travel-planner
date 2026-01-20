@@ -115,7 +115,7 @@ export default function HomePage() {
                         }}
                         onBlur={onBlur}
                         placeholder="YYYY-MM-DD to YYYY-MM-DD"
-                        className="bg-white w-full text-[#3C3C3C] px-6 py-5 rounded-lg"
+                        className="bg-slate-200/60! w-full text-[#3C3C3C] px-6 py-5 rounded-lg"
                         ref={ref}
                     />
                     )
