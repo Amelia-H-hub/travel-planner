@@ -10,6 +10,8 @@ export default function PlotlyChart({ chartData, className }: ChartProps) {
     return <div className="flex items-center justify-center h-full text-slate-400 text-sm">Waiting for chart data...</div>;
   }
 
+  const isPieOrDonut = chartData.data[0]?.type === 'pie';
+
   return (
     <div className={`w-full h-full flex justify-center items-center ${className}`}>
       <Plot
@@ -21,7 +23,9 @@ export default function PlotlyChart({ chartData, className }: ChartProps) {
           font: { family: 'inherit' },
           paper_bgcolor: 'rgba(0,0,0,0)', 
           plot_bgcolor: 'rgba(0,0,0,0)',
-          margin: chartData.layout.margin || { t: 40, r: 20, l: 50, b: 40 },
+          margin: isPieOrDonut
+            ? {t: 10, r:10, l:10, b:10}
+            : chartData.layout.margin || { t: 40, r: 20, l: 50, b: 40 },
         }}
         useResizeHandler={true}
         style={{ width: "100%", height: "100%" }}
