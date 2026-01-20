@@ -33,7 +33,7 @@ if ENV_MODE == "production":
     # --- Cancellation Risk Model ---
     CANCELLATION_RISK_MODEL_PATH = f"{HF_BASE_URL}/cancel_pipeline.pkl"
     PRICE_LOOKUP_PATH = f"{HF_BASE_URL}/price_lookup_reference.csv"
-    COUNTRY_MONTHLY_STATS_PATH = f"{HF_BASE_URL}/cancellation_predict", "country_monthly_stats.csv"
+    COUNTRY_MONTHLY_STATS_PATH = f"{HF_BASE_URL}/country_monthly_stats.csv"
     
     IS_LOCAL = False
 
