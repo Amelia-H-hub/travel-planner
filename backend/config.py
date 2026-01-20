@@ -3,9 +3,9 @@ from dotenv import load_dotenv
 
 load_dotenv() # read .env
 
-ENV = os.getenv("ENV", "development")
+ENV_MODE = os.getenv("ENV_MODE", "development")
 
-if ENV == "production":
+if ENV_MODE == "production":
   FRONTEND_ORIGINS = ["https://travel-planner-liart-theta.vercel.app"]
 else:
   FRONTEND_ORIGINS = ["http://localhost:5173"]
