@@ -9,8 +9,6 @@ export default function Layout() {
   const location = useLocation();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
-  const heightClass = location.pathname === "/" ? "h-50" : "h-25";
-
   return (
     <LoginModalContext.Provider value={({ openLoginModal: () => setIsLoginOpen(true)})}>
       <div className="h-screen flex flex-col">

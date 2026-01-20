@@ -1,14 +1,12 @@
 import inspirationBg from '../assets/inspiration_bg.jpg';
 import { Controller, useForm } from 'react-hook-form';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import countryList from 'react-select-country-list';
 import "flatpickr/dist/themes/airbnb.css";
 import AutoComplete from '../components/AutoComplete';
 import PersonSelector from '../components/PersonSelector';
 import { ArrowBigRightDash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { API_BASE_URL } from '@/constants';
-
 
 export default function InspirationForm() {
 

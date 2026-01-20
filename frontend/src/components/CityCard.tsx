@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import PlotlyChart from "./PlotlyChart";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/themes/material_blue.css";
@@ -67,7 +67,6 @@ export default function CityCard({
   onGetAdvice, analysisData, isLoadingAdvice
 }: CityCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [hasAnalysisData, setHasAnalysisData] = useState(false); // 控制 Phase 2 顯示
   const [selectedDate, setSelectedDate] = useState<Date[]>([]);
   const [isFlexibleYear, setIsFlexibleYear] = useState(false);
 
