@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import NavBar from './NavBar';
 import LoginModal from './LoginModal';
 import { LoginModalContext } from '../context/LoginModalContext';
