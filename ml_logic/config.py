@@ -28,7 +28,7 @@ if ENV_MODE == "production":
     # --- City Model ---
     CITY_MODEL_PATH = f"{HF_BASE_URL}/city_knn_model.pkl"
     CITY_SCALER_PATH = f"{HF_BASE_URL}/city_scaler.pkl"
-    CITY_DATA_PATH = f"{HF_BASE_URL}/Worldwide%20Travel%20Cities%20Dataset%20(Ratings%20and%20Climate).csv"
+    CITY_DATA_PATH = f"{HF_BASE_URL}/world_cities_data.csv"
 
     # --- Cancellation Risk Model ---
     CANCELLATION_RISK_MODEL_PATH = f"{HF_BASE_URL}/cancel_pipeline.pkl"
