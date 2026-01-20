@@ -5,14 +5,24 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import calendar
 import json
-from ..config import CANCELLATION_RISK_MODEL_PATH, PRICE_LOOKUP_PATH, COUNTRY_MONTHLY_STATS_PATH, RISK_FEATURES, LEAD_TIME_CONFIG
+import requests
+import io
+from ..config import CANCELLATION_RISK_MODEL_PATH, PRICE_LOOKUP_PATH, COUNTRY_MONTHLY_STATS_PATH, RISK_FEATURES, LEAD_TIME_CONFIG, IS_LOCAL
 from ..processors.data_utils import calculate_lead_time, get_month, determine_customer_type
 from ..processors.geo_tools import get_country_iso_code
 
 class BookingService:
     def __init__(self):
-        self.risk_model = joblib.load(CANCELLATION_RISK_MODEL_PATH)
-        self.price_lookup = pd.read_csv(PRICE_LOOKUP_PATH)
+        if IS_LOCAL:
+            self.risk_model = joblib.load(CANCELLATION_RISK_MODEL_PATH)
+            self.price_lookup = pd.read_csv(PRICE_LOOKUP_PATH)
+            
+        else:
+            print("Running in production, loading models from Hugging Face...")
+            resp = requests.get(CANCELLATION_RISK_MODEL_PATH)
+            self.risk_model = joblib.load(io.BytesIO(resp.content))
+            self.price_lookup = pd.read_csv(PRICE_LOOKUP_PATH)
+        
         self.lt_map = LEAD_TIME_CONFIG
         self.lt_steps = sorted(LEAD_TIME_CONFIG.values())
         self.visual_service = VisualService()

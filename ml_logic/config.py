@@ -4,28 +4,57 @@ import os
 # 1. Path Configurations
 # ========================================
 
+# Current environment
+ENV_MODE = os.getenv("ENV_MODE", "development")
+
+# ======== Local ========
 # Project root path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
 # Folder paths
 MODELS_DIR = os.path.join(BASE_DIR, "models")
 DATA_DIR = os.path.join(BASE_DIR, "..", "ml_research", "data")
 
+# ======== Hugging Face ========
+HF_BASE_URL = "https://huggingface.co/datasets/ama-h/travel-planning-logic/resolve/main"
+
 # File paths
-# --- Theme Model ---
-THEME_MODEL_PATH = os.path.join(MODELS_DIR, "theme_predict", "theme_rf_model.pkl")
-THEME_PREPROCESSOR_PATH = os.path.join(MODELS_DIR, "theme_predict", "theme_preprocessor.pkl")
-THEME_LE_PATH = os.path.join(MODELS_DIR, "theme_predict", "theme_label_encoder.pkl")
+# ========== Production ========
+if ENV_MODE == "production":
+    # --- Theme Model ---
+    THEME_MODEL_PATH = f"{HF_BASE_URL}/theme_rf_model.pkl"
+    THEME_PREPROCESSOR_PATH = f"{HF_BASE_URL}/theme_preprocessor.pkl"
+    THEME_LE_PATH = f"{HF_BASE_URL}/theme_label_encoder.pkl"
 
-# --- City Model ---
-CITY_MODEL_PATH = os.path.join(MODELS_DIR, "city_recommend", "city_knn_model.pkl")
-CITY_SCALER_PATH = os.path.join(MODELS_DIR, "city_recommend", "city_scaler.pkl")
-CITY_DATA_PATH = os.path.join(DATA_DIR, "Worldwide Travel Cities Dataset (Ratings and Climate).csv")
+    # --- City Model ---
+    CITY_MODEL_PATH = f"{HF_BASE_URL}/city_knn_model.pkl"
+    CITY_SCALER_PATH = f"{HF_BASE_URL}/city_scaler.pkl"
+    CITY_DATA_PATH = f"{HF_BASE_URL}/Worldwide Travel Cities Dataset (Ratings and Climate).csv"
 
-# --- Cancellation Risk Model ---
-CANCELLATION_RISK_MODEL_PATH = os.path.join(MODELS_DIR, "cancellation_predict", "cancel_pipeline.pkl")
-PRICE_LOOKUP_PATH = os.path.join(MODELS_DIR, "cancellation_predict", "price_lookup_reference.csv")
-COUNTRY_MONTHLY_STATS_PATH = os.path.join(MODELS_DIR, "cancellation_predict", "country_monthly_stats.csv")
+    # --- Cancellation Risk Model ---
+    CANCELLATION_RISK_MODEL_PATH = f"{HF_BASE_URL}/cancel_pipeline.pkl"
+    PRICE_LOOKUP_PATH = f"{HF_BASE_URL}/price_lookup_reference.csv"
+    COUNTRY_MONTHLY_STATS_PATH = f"{HF_BASE_URL}/cancellation_predict", "country_monthly_stats.csv"
+    
+    IS_LOCAL = False
+
+# ======== Local ========
+else:
+    # --- Theme Model ---
+    THEME_MODEL_PATH = os.path.join(MODELS_DIR, "theme_predict", "theme_rf_model.pkl")
+    THEME_PREPROCESSOR_PATH = os.path.join(MODELS_DIR, "theme_predict", "theme_preprocessor.pkl")
+    THEME_LE_PATH = os.path.join(MODELS_DIR, "theme_predict", "theme_label_encoder.pkl")
+
+    # --- City Model ---
+    CITY_MODEL_PATH = os.path.join(MODELS_DIR, "city_recommend", "city_knn_model.pkl")
+    CITY_SCALER_PATH = os.path.join(MODELS_DIR, "city_recommend", "city_scaler.pkl")
+    CITY_DATA_PATH = os.path.join(DATA_DIR, "Worldwide Travel Cities Dataset (Ratings and Climate).csv")
+
+    # --- Cancellation Risk Model ---
+    CANCELLATION_RISK_MODEL_PATH = os.path.join(MODELS_DIR, "cancellation_predict", "cancel_pipeline.pkl")
+    PRICE_LOOKUP_PATH = os.path.join(MODELS_DIR, "cancellation_predict", "price_lookup_reference.csv")
+    COUNTRY_MONTHLY_STATS_PATH = os.path.join(MODELS_DIR, "cancellation_predict", "country_monthly_stats.csv")
+    
+    IS_LOCAL = True
 
 
 # ========================================

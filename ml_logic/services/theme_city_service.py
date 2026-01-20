@@ -1,19 +1,36 @@
 import joblib
 import pandas as pd
 import numpy as np
-from ..config import THEME_MODEL_PATH, THEME_PREPROCESSOR_PATH, THEME_LE_PATH, CITY_MODEL_PATH, CITY_SCALER_PATH, CITY_DATA_PATH, THEME_FEATURES, BUDGET_MAP, CITY_FEATURES, WEIGHT_CONFIG, CLIMATE_MODES
+import requests
+import io
+from ..config import THEME_MODEL_PATH, THEME_PREPROCESSOR_PATH, THEME_LE_PATH, CITY_MODEL_PATH, CITY_SCALER_PATH, CITY_DATA_PATH, THEME_FEATURES, BUDGET_MAP, CITY_FEATURES, WEIGHT_CONFIG, CLIMATE_MODES, IS_LOCAL
 from ..processors.geo_tools import get_city_climate_calendar
 from ..processors.data_utils import classify_travel_companion
 
 class ThemeCityService:
     # Load models and data    
     def __init__(self):
-        self.rf = joblib.load(THEME_MODEL_PATH)
-        self.preprocessor = joblib.load(THEME_PREPROCESSOR_PATH)
-        self.le = joblib.load(THEME_LE_PATH)
-        self.knn = joblib.load(CITY_MODEL_PATH)
-        self.scaler = joblib.load(CITY_SCALER_PATH)
-        self.city_raw_data = pd.read_csv(CITY_DATA_PATH)
+        if IS_LOCAL:
+            self.rf = joblib.load(THEME_MODEL_PATH)
+            self.preprocessor = joblib.load(THEME_PREPROCESSOR_PATH)
+            self.le = joblib.load(THEME_LE_PATH)
+            self.knn = joblib.load(CITY_MODEL_PATH)
+            self.scaler = joblib.load(CITY_SCALER_PATH)
+            self.city_raw_data = pd.read_csv(CITY_DATA_PATH)
+        else:
+            print("Running in production, loading models from Hugging Face...")
+            
+            def load_hf_model(url):
+                resp = requests.get(url)
+                resp.raise_for_status()
+                return joblib.load(io.BytesIO(resp.content))
+            
+            self.rf = load_hf_model(THEME_MODEL_PATH)
+            self.preprocessor = load_hf_model(THEME_PREPROCESSOR_PATH)
+            self.le = load_hf_model(THEME_LE_PATH)
+            self.knn = load_hf_model(CITY_MODEL_PATH)
+            self.scaler = load_hf_model(CITY_SCALER_PATH)
+            self.city_raw_data = pd.read_csv(CITY_DATA_PATH)
     
     def predict_theme(self, user_input):
         companion_label = classify_travel_companion(
