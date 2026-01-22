@@ -112,7 +112,7 @@ export default function AutoComplete({
       >
       </input>
       {showDropdown && filteredSuggestions.length > 0 && (
-        <ul className="absolute z-10 max-h-[250px] overflow-y-auto custom-scrollbar bg-slate-200/60! border border-gray-500! w-full rounded mt-1 shadow backdrop-blur-sm">
+        <ul className="absolute z-10 max-h-[250px] overflow-y-auto custom-scrollbar bg-slate-200! border border-gray-500! w-full rounded mt-1 shadow backdrop-blur-sm">
           {filteredSuggestions.map((item, index) => (
             <li
               key={index}

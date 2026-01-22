@@ -10,24 +10,18 @@ export default function Layout() {
 
   return (
     <LoginModalContext.Provider value={({ openLoginModal: () => setIsLoginOpen(true)})}>
-      <div className="h-screen flex flex-col">
-        <div className="fixed top-0 left-0 w-full bg-transparent z-50 pointer-events-none">
-          <div className="pointer-events-auto">
-            <NavBar />
-          </div>
-        </div>
+      <NavBar />
 
-        {/* Scrollable Content */}
-        <div className="w-full h-full overflow-auto z-0">
-          <Outlet />
-          <Toaster />
-        </div>
+      {/* Scrollable Content */}
+      <main className="w-full h-full min-h-screen">
+        <Outlet />
+        <Toaster />
+      </main>
 
         <LoginModal 
           isOpen={isLoginOpen}
           onClose={() => setIsLoginOpen(false)}
         />
-      </div>
     </LoginModalContext.Provider>
   );
 };
