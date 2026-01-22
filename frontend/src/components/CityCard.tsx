@@ -196,7 +196,14 @@ export default function CityCard({
       {/* 展開區域：100% 寬度 */}
       {isExpanded && (
         <div className="bg-slate-50/50 border-t border-slate-100 p-8 space-y-10 animate-in slide-in-from-top-4 duration-500">
-          
+          <h2 className="text-xl md:text-2xl lg:text-3xl text-[#1f3255] font-bold tracking-tight leading-tight">
+            Based on your preference for <span className="text-slate-500 italic">{cityObj.city}</span>, 
+            <br className="hidden md:block" />
+            here is the hospitality trend for <span className="relative inline-block text-[#2096a8] font-black">
+              {cityObj.country}
+              <span className="absolute bottom-1 left-0 w-full h-3 bg-[#4de4cf]/80 -z-10 animate-pulse-slow"></span>
+            </span>.
+          </h2>
           {/* Phase 1: General Trend */}
           <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             <div className="lg:col-span-2 space-y-4">
