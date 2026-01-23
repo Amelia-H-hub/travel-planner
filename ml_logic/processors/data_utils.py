@@ -1,4 +1,5 @@
 from datetime import datetime, date
+import pandas as pd
 
 def classify_travel_companion(companion):
     b, c, a, s = companion['babies'], companion['children'], companion['adults'], companion['seniors']
@@ -39,3 +40,14 @@ def determine_customer_type(companion):
         return 'Transient-Party'
     
     return 'Transient'
+
+def calculate_stay_distribution(start_date_str, end_date_str):
+    start_date = pd.to_datetime(start_date_str)
+    end_date = pd.to_datetime(end_date_str)
+    
+    stay_days = pd.date_range(start=start_date, end=end_date, inclusive='left')
+    
+    weekend_nights = len([d for d in stay_days if d.weekday() in [4, 5]])
+    week_nights = len(stay_days) - weekend_nights
+    
+    return weekend_nights, week_nights

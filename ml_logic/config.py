@@ -32,6 +32,7 @@ if ENV_MODE == "production":
 
     # --- Cancellation Risk Model ---
     CANCELLATION_RISK_MODEL_PATH = f"{HF_BASE_URL}/cancel_pipeline.pkl"
+    PRICE_MODEL_PATH = f"{HF_BASE_URL}/price_pipeline.pkl"
     PRICE_LOOKUP_PATH = f"{HF_BASE_URL}/price_lookup_reference.csv"
     COUNTRY_MONTHLY_STATS_PATH = f"{HF_BASE_URL}/country_monthly_stats.csv"
     
@@ -51,6 +52,7 @@ else:
 
     # --- Cancellation Risk Model ---
     CANCELLATION_RISK_MODEL_PATH = os.path.join(MODELS_DIR, "cancellation_predict", "cancel_pipeline.pkl")
+    PRICE_MODEL_PATH = os.path.join(MODELS_DIR, "cancellation_predict", "price_pipeline.pkl")
     PRICE_LOOKUP_PATH = os.path.join(MODELS_DIR, "cancellation_predict", "price_lookup_reference.csv")
     COUNTRY_MONTHLY_STATS_PATH = os.path.join(MODELS_DIR, "cancellation_predict", "country_monthly_stats.csv")
     
@@ -92,9 +94,11 @@ CLIMATE_MODES = {
 }
 
 # Features used in cancellation risk predict model
-RISK_FEATURES = [
-    'lead_time', 'arrival_date_month_num', 'adults', 'children', 'babies', 
-    'country', 'deposit_type', 'customer_type'
+BOOKING_FEATURES = [
+    'lead_time', 'arrival_date_month_num', 'arrival_date_week_number', 'stays_in_weekend_nights', 'stays_in_week_nights', 
+    'adults', 'children', 'babies', 
+    'country', 'market_segment', 'deposit_type', 'customer_type',
+    'required_car_parking_spaces', 'total_of_special_requests'
 ]
 
 # Lead time mapping
