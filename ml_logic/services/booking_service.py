@@ -91,6 +91,14 @@ class BookingService:
                 test_weeks = self._get_weeks_in_month(sim_year, m)
                 
                 for w in test_weeks:
+                    # Exclude the date before today
+                    try:
+                        check_date = pd.to_datetime(f'{sim_year}-W{w}-1', format='%G-W%V-%u')
+                        if check_date <= now:
+                            continue
+                    except:
+                        pass
+                    
                     temp_df = input_data.copy()
                     temp_df['arrival_date_month_num'] = m
                     temp_df['arrival_date_week_number'] = w
@@ -180,8 +188,8 @@ class BookingService:
         )
         
         # 2. Same month
-        this_year_options = res_df[(res_df['month'] == user_month) & (res_df['lt'] <= user_lt)]
-        next_year_options = res_df[(res_df['month'] == user_month) & (res_df['lt'] > user_lt)]
+        this_year_options = res_df[(res_df['month'] == user_month) & (res_df['lt'] <= 365)]
+        next_year_options = res_df[(res_df['month'] == user_month) & (res_df['lt'] > 365)]
         
         best_this_year = self.get_advice_by_weight(this_year_options, w_risk, w_price)
         
@@ -270,7 +278,7 @@ class BookingService:
         else:
             return {
                 "status": "info",
-                "message": f"✅ The price is within a reasonable range. Our AI prediction is consistent with typical market rates {context.lower()}."
+                "message": f"The price is within a reasonable range. Our AI prediction is consistent with typical market rates {context.lower()}."
             }
     
     def get_hotel_booking_strategy(self, user_input):
