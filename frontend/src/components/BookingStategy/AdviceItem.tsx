@@ -69,8 +69,6 @@ export default function AdviceItem({advices}: AdviceProp) {
     <div className="flex flex-col gap-4">
       {Object.values(groupedAdvices).map((group, index) => {
         const {data, keys} = group;
-        const primaryKey = keys.includes('best_cp') ? 'best_cp' : keys[0];
-        const mainConfig = config[primaryKey as keyof typeof config];
 
         return (
           <div key={index} className="group relative p-6 bg-white border border-slate-100 rounded-[32px] shadow-sm hover:shadow-xl hover:border-[#2096a8]/30 transition-all duration-500 flex flex-col justify-between">

@@ -101,7 +101,7 @@ export default function BookingStrategy({
               id="dateRange"
               value={selectedDate} 
               options={flatpickrOptions}
-              onChange={(dates, dateStr, instance) => {
+              onChange={(_, dateStr) => {
                 const dateArray = dateStr ? dateStr.split(" to ") : [];
                 setSelectedDate(dateArray);
               }
