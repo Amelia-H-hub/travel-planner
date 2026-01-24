@@ -95,6 +95,10 @@ button:hover {
     @apply w-full px-4 py-5 bg-slate-200/60 border border-gray-500 rounded-lg text-[#3C3C3C] outline-none transition-all;
   }
 
+  input[type="checkbox"] {
+    @apply w-5 h-5 cursor-pointer appearance-none border-2 border-slate-200 rounded-lg checked:bg-[#2096a8] checked:border-[#2096a8] transition-all duration-200 relative checked:after:content-['✓'] after:text-white after:text-[12px] after:font-bold after:absolute after:inset-0 after:flex after:items-center after:justify-center
+  }
+
   input:focus, select:focus {
     @apply ring-2 ring-gray-800/20 border-gray-800;
   }

@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import joblib
 import plotly.graph_objects as go
 import plotly.io as pio
@@ -7,21 +6,22 @@ import calendar
 import json
 import requests
 import io
-from ml_logic.config import CANCELLATION_RISK_MODEL_PATH, PRICE_LOOKUP_PATH, COUNTRY_MONTHLY_STATS_PATH, RISK_FEATURES, LEAD_TIME_CONFIG, IS_LOCAL
-from ml_logic.processors.data_utils import calculate_lead_time, get_month, determine_customer_type
+from ml_logic.config import CANCELLATION_RISK_MODEL_PATH, PRICE_MODEL_PATH, COUNTRY_MONTHLY_STATS_PATH, BOOKING_FEATURES, LEAD_TIME_CONFIG, IS_LOCAL
+from ml_logic.processors.data_utils import calculate_lead_time, get_month, determine_customer_type, calculate_stay_distribution
 from ml_logic.processors.geo_tools import get_country_iso_code
 
 class BookingService:
     def __init__(self):
         if IS_LOCAL:
             self.risk_model = joblib.load(CANCELLATION_RISK_MODEL_PATH)
-            self.price_lookup = pd.read_csv(PRICE_LOOKUP_PATH)
+            self.price_model = joblib.load(PRICE_MODEL_PATH)
             
         else:
             print("Running in production, loading models from Hugging Face...")
-            resp = requests.get(CANCELLATION_RISK_MODEL_PATH)
-            self.risk_model = joblib.load(io.BytesIO(resp.content))
-            self.price_lookup = pd.read_csv(PRICE_LOOKUP_PATH)
+            risk_resp = requests.get(CANCELLATION_RISK_MODEL_PATH)
+            self.risk_model = joblib.load(io.BytesIO(risk_resp.content))
+            price_resp = requests.get(PRICE_MODEL_PATH)
+            self.price_model = joblib.load(io.BytesIO(price_resp.content))
         
         self.lt_map = LEAD_TIME_CONFIG
         self.lt_steps = sorted(LEAD_TIME_CONFIG.values())
@@ -43,55 +43,59 @@ class BookingService:
         test_lts.append(user_lt)
         return sorted(list(set(test_lts)))
     
-    def get_interpolated_price(self, country, month, lt):
-        city_prices = self.price_lookup[
-            (self.price_lookup['country'] == country) &
-            (self.price_lookup['arrival_date_month_num'] == month)
-        ].copy()
-        
-        if city_prices.empty: return 100
-        
-        city_prices['lt_days'] = city_prices['lead_time_bucket'].map(self.lt_map)
-        city_prices = city_prices.sort_values('lt_days')
-        
-        estimated_price = np.interp(
-            lt,
-            city_prices['lt_days'].values,
-            city_prices['adr'].values
-        )
-        
-        return estimated_price
+    def _get_weeks_in_month(self, year, month):
+        month_days = pd.date_range(start=f"{year}-{month}-01", periods=pd.Period(f"{year}-{month}").days_in_month)
+        return sorted(list(set([d.isocalendar().week for d in month_days])))
     
     def get_complete_risk_price_report(self, input_data, is_flexible_year=False):
-        target_country = input_data['country'].values[0]
+        now = pd.Timestamp.now()
         
+        # test lead time
         user_lt = int(input_data['lead_time'].iloc[0])
         test_lts = self.get_test_lts(user_lt, is_flexible_year)
         
+        # test arrival month
         user_month = input_data['arrival_date_month_num'].iloc[0]
         test_months = range(1, 13)
         
         results = []
-        for m in test_months:
+        for m in test_months:            
             lts_to_check = test_lts if m == user_month else self.lt_steps
             
             for lt in lts_to_check:
-                temp_df = input_data.copy()
-                temp_df['arrival_date_month_num'] = m
-                temp_df['lead_time'] = lt
+                simulated_date = now + pd.Timedelta(days=lt)
+                sim_year = simulated_date.year
                 
-                # Predict risk
-                prob = self.risk_model.predict_proba(temp_df)[0][1]
+                test_weeks = self._get_weeks_in_month(sim_year, m)
                 
-                # Calculate price
-                price = self.get_interpolated_price(target_country, m, lt)
-                
-                results.append({
-                    'month': m,
-                    'lt': lt,
-                    'risk': prob,
-                    'price': price
-                })
+                for w in test_weeks:
+                    # Exclude the date before today
+                    try:
+                        check_date = pd.to_datetime(f'{sim_year}-W{w}-1', format='%G-W%V-%u')
+                        if check_date <= now:
+                            continue
+                    except:
+                        pass
+                    
+                    temp_df = input_data.copy()
+                    temp_df['arrival_date_month_num'] = m
+                    temp_df['arrival_date_week_number'] = w
+                    temp_df['lead_time'] = lt
+                    
+                    # Predict risk
+                    prob = self.risk_model.predict_proba(temp_df)[0][1]
+                    
+                    # Calculate price
+                    price = self.price_model.predict(temp_df)[0]
+                    
+                    results.append({
+                        'year': sim_year,
+                        'month': m,
+                        'week_number': w,
+                        'lt': lt,
+                        'risk': prob,
+                        'price': price
+                    })
         
         res_df = pd.DataFrame(results)
         
@@ -108,12 +112,44 @@ class BookingService:
         
         return advice
     
+    def _get_date_match_from_week(self, advice, target_weekend, target_week):
+        if advice is None: return None
+        
+        advice_data = advice.to_dict() if hasattr(advice, 'to_dict') else advice
+        year = int(advice_data['year'])
+        week = int(advice_data['week_number'])
+        start_of_week = pd.to_datetime(f'{year}-W{week}-1', format='%G-W%V-%u')
+        total_nights = target_weekend + target_week
+        
+        for i in range(7):
+            candidate_start = start_of_week + pd.Timedelta(days=i)
+            
+            stay_range = pd.date_range(start=candidate_start, periods=total_nights)
+            
+            current_weekend = len([d for d in stay_range if d.weekday() in [4, 5]])
+            current_week = total_nights - current_weekend
+            
+            if current_weekend == target_weekend and current_week == target_week:
+                return {
+                    **advice_data,
+                    "check_in": stay_range[0].strftime('%Y-%m-%d'),
+                    "check_out": (stay_range[-1] + pd.Timedelta(days=1)).strftime('%Y-%m-%d'),
+                    "stay_dates": [d.strftime('%Y-%m-%d') for d in stay_range]
+                }
+        
+        # Fallback: If cannot match, return Friday of the week as start date
+        fallback_start = start_of_week + pd.Timedelta(days=4)
+        return {
+            **advice_data,
+            "check_in": fallback_start.strftime('%Y-%m-%d'),
+            "check_out": (fallback_start + pd.Timedelta(days=total_nights)).strftime('%Y-%m-%d'),
+            "stay_dates": [] 
+        }
+    
     def get_stategic_advice(self, input_data, w_risk, w_price, is_flexible_year=False):
         res_df = self.get_complete_risk_price_report(input_data, is_flexible_year)
         user_lt = input_data['lead_time'].iloc[0]
         user_month = input_data['arrival_date_month_num'].iloc[0]
-        avg_risk = res_df['risk'].mean()
-        yearly_avg_price = res_df['price'].mean()
         
         # normalization
         risk_min, risk_max = res_df['risk'].min(), res_df['risk'].max()
@@ -124,10 +160,14 @@ class BookingService:
             
         # 1. Best CP value in an year
         cp_advice = self.get_advice_by_weight(res_df[res_df['lt'] <= 365], w_risk, w_price)
+        cp_advice = self._get_date_match_from_week(
+            cp_advice,
+            input_data['stays_in_weekend_nights'].iloc[0], input_data['stays_in_week_nights'].iloc[0]
+        )
         
         # 2. Same month
-        this_year_options = res_df[(res_df['month'] == user_month) & (res_df['lt'] <= user_lt)]
-        next_year_options = res_df[(res_df['month'] == user_month) & (res_df['lt'] > user_lt)]
+        this_year_options = res_df[(res_df['month'] == user_month) & (res_df['lt'] <= 365)]
+        next_year_options = res_df[(res_df['month'] == user_month) & (res_df['lt'] > 365)]
         
         best_this_year = self.get_advice_by_weight(this_year_options, w_risk, w_price)
         
@@ -146,6 +186,11 @@ class BookingService:
             month_advice = best_this_year
             month_advice['is_next_year'] = False
         
+        month_advice = self._get_date_match_from_week(
+            month_advice,
+            input_data['stays_in_weekend_nights'].iloc[0], input_data['stays_in_week_nights'].iloc[0]
+        )
+        
         # 3. Same or longer lead time
         future_months = [(int(user_month) + i - 1) % 12 + 1 for i in range(1, 4)]
         lt_candidates = res_df[
@@ -160,6 +205,10 @@ class BookingService:
             ]
         
         lt_advice = self.get_advice_by_weight(lt_candidates, w_risk, w_price)
+        lt_advice = self._get_date_match_from_week(
+            lt_advice,
+            input_data['stays_in_weekend_nights'].iloc[0], input_data['stays_in_week_nights'].iloc[0]
+        )
         
         # Plot bubble chart
         bubble_chart = self.visual_service.plot_bubble_recommendation(res_df, cp_advice, lt_advice, month_advice)
@@ -186,6 +235,30 @@ class BookingService:
         
         return w_risk, w_price
     
+    def get_ai_insight(self, predicted_price, country_iso, month):
+        context, avg_base = self.visual_service.get_price_baseline(country_iso, month)
+        
+        diff_ratio = (predicted_price - avg_base) / avg_base
+        diff_pct = abs(int(diff_ratio * 100))
+        
+        if diff_ratio < -0.15:
+            return {
+                "status": "success",
+                "message": f"{context}, this is a Great Value! The predicted rate is {diff_pct}% lower than the historical average. It’s an excellent time to secure your booking."
+            }
+        
+        elif diff_ratio > 0.15:
+            return {
+                "status": "warning",
+                "message": f"{context}, the estimated price is {diff_pct}% higher than average. This may be due to peak demand or your specific group size. Consider adjusting your dates for better rates."
+            }
+        
+        else:
+            return {
+                "status": "info",
+                "message": f"The price is within a reasonable range. Our AI prediction is consistent with typical market rates {context.lower()}."
+            }
+    
     def get_hotel_booking_strategy(self, user_input):
         w_risk, w_price = self.get_risk_price_weight(user_input['companion'])
         is_flexible_year = user_input['is_flexible_year']
@@ -194,19 +267,30 @@ class BookingService:
         current_input = pd.DataFrame([user_input]) if isinstance(user_input, dict) else user_input.copy()
         current_input['lead_time'] = calculate_lead_time(user_input['arrival_date'])
         current_input['arrival_date_month_num'] = get_month(user_input['arrival_date'])
+        current_input['arrival_date_week_number'] = pd.to_datetime(user_input['arrival_date']).isocalendar().week
+        current_input['stays_in_weekend_nights'], current_input['stays_in_week_nights'] = calculate_stay_distribution(user_input['arrival_date'], user_input['leave_date'])
         current_input['adults'] = user_input['companion'].get('adults', 0) + user_input['companion'].get('seniors', 0)
         current_input['children'] = user_input['companion'].get('children', 0)
         current_input['babies'] = user_input['companion'].get('babies', 0)
         current_input['country'] = get_country_iso_code(user_input['country_name'])
+        current_input['market_segment'] = 'Online TA' # Default
         current_input['deposit_type'] = 'No Deposit' # Default
         current_input['customer_type'] = determine_customer_type(
             user_input['companion']
         )
-        current_input = current_input[RISK_FEATURES]
+        current_input['required_car_parking_spaces'] = 0
+        current_input['total_of_special_requests'] = 0
+        current_input = current_input[BOOKING_FEATURES]
         
         # Plot risk donut chart
         user_prob = float(self.risk_model.predict_proba(current_input)[0][1])
         donut_chart = self.visual_service.draw_risk_donut(user_prob)
+        
+        # Predict adr
+        price_predicted = int(self.price_model.predict(current_input)[0])
+        
+        # Get current AI insight
+        ai_insight = self.get_ai_insight(price_predicted, current_input['country'].iloc[0], current_input['arrival_date_month_num'].iloc[0])
         
         # Get advices
         cp_advice, month_advice, lt_advice, bubble_chart = self.get_stategic_advice(current_input, w_risk, w_price, is_flexible_year)
@@ -214,10 +298,12 @@ class BookingService:
         return {
             "donut_chart": donut_chart,
             "current_risk": user_prob,
+            "current_adr": price_predicted,
+            "current_insight": ai_insight,
             "recommendations": {
-                "best_cp": cp_advice.to_dict() if cp_advice is not None else None,
-                "month_priority": month_advice.to_dict() if month_advice is not None else None,
-                "lt_priority": lt_advice.to_dict() if lt_advice is not None else None
+                "best_cp": cp_advice,
+                "month_priority": month_advice,
+                "lt_priority": lt_advice
             },
             "bubble_chart": bubble_chart
         }
@@ -228,132 +314,6 @@ class VisualService:
         self.country_monthly_stats = self.country_monthly_stats.rename(
             columns={'arrival_date_month_num': 'month'}
         )
-    
-    def get_climate(self, climate_calendar):
-        if hasattr(climate_calendar, "model_dump"):
-            climate_calendar = climate_calendar.model_dump()
-        
-        rows= []
-        for climate_type, months_list in climate_calendar.items():
-            for item in months_list:
-                if isinstance(item, dict):
-                    m = item.get('month')
-                    t = item.get('temp')
-                else:
-                    m = getattr(item, 'month', None)
-                    t = getattr(item, 'temp', None)
-                
-                rows.append({
-                    'month': m,
-                    'avg_temp': t,
-                    'climate': climate_type
-                })
-        
-        climate_df = pd.DataFrame(rows)
-        climate_df = climate_df.dropna(subset=['month'])
-        return climate_df.sort_values(by='month')
-    
-    def prepare_plot_data(self, rec_city):
-        country_iso = get_country_iso_code(rec_city.country)
-        price_df = self.country_monthly_stats[self.country_monthly_stats['country'] == country_iso]
-        climate_df = self. get_climate(rec_city.climate_calendar)
-        
-        combined_df = pd.merge(price_df, climate_df, on='month', how='right')
-        combined_df['month_name'] = combined_df['month'].apply(lambda x: calendar.month_name[x])
-        combined_df = combined_df.sort_values(by='month')
-        print(combined_df)
-        
-        return combined_df
-    
-    def plot_monthly_climate_price(self, rec_city):
-        plot_data = self.prepare_plot_data(rec_city)
-        
-        fig = go.Figure()
-        
-        bg_palette = {
-            'Cold': 'rgba(147, 197, 253, 0.2)',     # 淺天藍
-            'Cool': 'rgba(148, 163, 184, 0.2)',     # 灰藍色
-            'Pleasant': 'rgba(32, 150, 168, 0.2)', # 湖水綠
-            'Hot': 'rgba(244, 63, 94, 0.2)'       # 西瓜紅
-        }
-        
-        shapes = []
-        for _, row in plot_data.iterrows():
-            m = row['month']
-            c_type = row.get('climate')
-            
-            if pd.notna(c_type) and c_type in bg_palette:
-                shapes.append(dict(
-                    type='rect',
-                    xref='x',
-                    yref='paper',
-                    x0=m - 0.5, x1=m + 0.5,
-                    y0=0, y1=1,
-                    fillcolor=bg_palette[c_type],
-                    layer="below",
-                    line_width=0
-                ))
-        
-        fig.add_trace(go.Scatter(
-            x=plot_data['month'],
-            y=plot_data['avg_adr'],
-            mode='lines+markers',
-            line=dict(
-                color='#1f3255',
-                width=3
-            ),
-            marker=dict(
-                size=10,
-                color='#1f3255',
-                line=dict(
-                    width=2,
-                    color='white'
-                )
-            ),
-            name='Avg Price',
-            showlegend=False,
-            # Define detailed hover information
-            customdata=np.stack((
-                plot_data['month_name'], 
-                plot_data['avg_temp'], 
-                plot_data['max_adr'].fillna(0), 
-                plot_data['min_adr'].fillna(0),
-                plot_data['climate'].fillna("Unknown")
-            ), axis=-1),
-            hovertemplate=(
-                "<b>Month: %{customdata[0]}</b><br>" +
-                "Avg Temp: %{customdata[1]}°C<br>" +
-                "Avg Price: €%{y:.2f}<br>" +
-                "Max Price: €%{customdata[2]:.2f}<br>" +
-                "Min Price: €%{customdata[3]:.2f}<br>" +
-                "<extra></extra>"
-            )
-        ))
-                
-        fig.update_layout(
-            shapes=shapes,
-            title=f"Travel Insights: Hotel Price & Climate in {rec_city.country}",
-            xaxis=dict(
-                title='Month',
-                tickmode='array',
-                tickvals=list(range(1, 13)),
-                ticktext=[calendar.month_abbr[i] for i in range(1, 13)],
-                range=[0.5, 12.5],
-                showgrid=False
-            ),
-            yaxis=dict(
-                title='Average Daily Reate (€)',
-                gridcolor='rgba(0, 0, 0, 0.05)',
-                zeroline=False
-            ),
-            hovermode='closest',
-            plot_bgcolor='rgba(0, 0, 0, 0)',
-            paper_bgcolor='rgba(0, 0, 0, 0)',
-            margin=dict(l=50, r=20, t=30, b=40),
-            showlegend=False
-        )
-        
-        return json.loads(pio.to_json(fig))
     
     def draw_risk_donut(self, cancel_prob: float):
         risk_percent = cancel_prob * 100
@@ -398,6 +358,19 @@ class VisualService:
         )
         
         return json.loads(pio.to_json(fig))
+    
+    def get_price_baseline(self, country_iso, month):
+        row = self.country_monthly_stats[
+            (self.country_monthly_stats['country'] == country_iso) & 
+            (self.country_monthly_stats['month'] == month)
+        ]
+        
+        if not row.empty and row['count'].iloc[0] > 10:
+            return 'Compare to travelers from your country', row['avg_adr'].iloc[0]
+        
+        # When there's no specific country data, return global average
+        global_avg = self.country_monthly_stats[self.country_monthly_stats['month'] == month]['avg_adr'].mean()
+        return 'Based on general market trends for this month', global_avg
     
     def plot_bubble_recommendation(self, res_df, cp_advice, lt_advice, month_advice):
         fig = go.Figure()

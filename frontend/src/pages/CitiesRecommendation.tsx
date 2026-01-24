@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
 import { useLocation } from "react-router-dom";
 import { API_BASE_URL } from '@/constants';
-import CityCard from "@/components/CityCard";
+import CityCard from "../components/CityCard";
+import BookingStrategy from "../components/BookingStategy";
 
 interface Companion {
   babies: number;
@@ -49,16 +50,6 @@ export default function CitiesRecommendation() {
   // Recommended Cities
   const [recCities, setRecCities] = useState<City[]>([])
 
-  // Climate Price Chart
-  const [countryCache, setCountryCache] = useState<Record<string, any>>({});
-  const [loadingCountries, setLoadingCountries] = useState<Record<string, boolean>>({});
-
-  // Hotel Booking Strategy
-  const [adviceCache, setAdviceCache] = useState<Record<string, any>>({});
-  const [isAnalyzing, setIsAnalyzing] = useState<Record<string, boolean>>({});
-  const [activeDatePerCity, setActiveDatePerCity] = useState<Record<string, string>>({});
-  const [activeFlexPerCity, setActiveFlexPerCity] = useState<Record<string, boolean>>({});
-
   useEffect(() => {
     console.log("Input Data Received:", inputData);
     getRecommendedCities(inputData);
@@ -75,81 +66,8 @@ export default function CitiesRecommendation() {
     setRecCities(cities.data || []);
   }
 
-  const fetchMonthlyClimatePrice = async (country: string, climate_calendar: ClimateCalendar) => {
-    // Check if already had this country's data
-    if (countryCache[country]) {
-      console.log(`Using cached data for ${country}`);
-      return;
-    }
-
-    // Avoid sending the same country request at the same time
-    if (loadingCountries[country]) return;
-    
-    setLoadingCountries(prev => ({ ...prev, [country]: true }));
-
-    try {
-      const data = {
-        country: country,
-        climate_calendar: climate_calendar
-      }
-      
-      const res = await fetch(`${API_BASE_URL}/api/recommendation/get_monthly_climate_price` , {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-      const result = await res.json();
-      console.log("Fetch climate price plot:", result);
-
-      if (result.status === "success") {
-        setCountryCache(prev => ({
-          ...prev,
-          [country]: result.data.chart
-        }));
-      }
-    } catch (error) {
-      console.error("Fetch climate price error:", error);
-    } finally {
-      setLoadingCountries(prev => ({ ...prev, [country]: false }));
-    }
-  };
-
-  const handleBookingAdvice = async (country_name: string, date: string, isFlexibleYear: boolean) => {
-    const cacheKey = `${country_name}_${date}_${isFlexibleYear}`;    
-    if (adviceCache[cacheKey] || isAnalyzing[cacheKey]) return;
-
-    // Start analyzing
-    setIsAnalyzing(prev => ({ ...prev, [cacheKey]: true }));
-    const companion = inputData.companion;
-    const req = {
-      arrival_date: date,
-      is_flexible_year: isFlexibleYear,
-      companion: companion,
-      country_name: country_name
-    }
-
-    // Trigger API
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/recommendation/booking`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(req)
-      });
-      const result = await res.json()
-      console.log("Fetch booking advices:", result);
-
-      if (result.code === 200) {
-        setAdviceCache(prev => ({ ...prev, [cacheKey]: result.data }));
-      }
-    } catch (error) {
-      console.error("Fetch booking advices error:", error);
-    } finally {
-      setIsAnalyzing(prev => ({ ...prev, [cacheKey]: false }));
-    }
-  };
-
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-[#e0f2f1] via-[#f0f9ff] to-white"> {/* 溫和的淺灰藍底色 */}
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-[#e0f2f1] via-[#f0f9ff] to-white">
       {/* 模擬雲層的柔光感 */}
       <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#2096a8]/10 to-transparent pointer-events-none" />
 
@@ -160,41 +78,53 @@ export default function CitiesRecommendation() {
       {/* Main Content */}
       <div className="relative z-10 pt-32 px-8 max-w-7xl mx-auto">
         <header className="mb-12">
-          <h2 className="text-[#1f3255] text-4xl font-bold tracking-tight">
-            Your Next Adventure
+          <h2 className="text-[#1f3255] text-[36px] lg:text-[52px] font-bold tracking-tight mb-2">
+            Smart Destinations & Strategic Timing
           </h2>
-          <p className="text-[#1f3255]/60 mt-2 text-lg font-medium">
-            Based on your travel personality, we found these perfect matches.
+          <p className="text-[14px] lg:text-[20px] text-slate-500 font-medium flex items-center justify-center gap-2">
+            <span className="text-[#2096a8] font-bold">Where:</span> Discover top cities 
+            <span className="text-slate-300">|</span>
+            <span className="text-[#1f3255] font-bold">When:</span> Optimize your booking window
           </p>
         </header>
         
-        {/* City Cards */}
-        <div className="relative z-10">
-          {recCities.map((cityObj) => {
-            const currentActiveDate = activeDatePerCity[cityObj.country];
-            const currentIsFlexible = activeFlexPerCity[cityObj.country];
-            const cacheKey = currentActiveDate 
-              ? `${cityObj.country}_${currentActiveDate}_${currentIsFlexible}` 
-              : null;
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Cities list */}
+          <div className="lg:col-span-5 space-y-4">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="bg-[#2096a8] text-white w-8 h-8 rounded-full flex items-center justify-center font-black shadow-lg shadow-[#2096a8]/20">1</div>
+              <div>
+                <h2 className="text-left text-2xl font-bold text-[#1f3255] leading-none">Where to go?</h2>
+                <p className="text-[14px] text-slate-400 font-bold uppercase mt-1">Select a destination</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 gap-4">
+              {recCities.map((cityObj) => {
+                return (
+                  <CityCard
+                    key={cityObj.city}
+                    cityObj={cityObj}
+                  />
+                );
+              })}
+            </div>
+          </div>
 
-            return (
-              <CityCard
-                key={cityObj.city}
-                companion={inputData.companion}
-                cityObj={cityObj}
-                onExpand={() => fetchMonthlyClimatePrice(cityObj.country, cityObj.climate_calendar)}
-                chartData={countryCache[cityObj.country]}
-                isLoadingChart={loadingCountries[cityObj.country]}
-                onGetAdvice={(date, isFlexibleYear) => {
-                  setActiveDatePerCity(prev => ({ ...prev, [cityObj.country]: date}));
-                  setActiveFlexPerCity(prev => ({ ...prev, [cityObj.country]: isFlexibleYear}));
-                  handleBookingAdvice(cityObj.country, date, isFlexibleYear)
-                }}
-                analysisData={cacheKey ? adviceCache[cacheKey] : null}
-                isLoadingAdvice={cacheKey ? isAnalyzing[cacheKey] : false}
-              />
-            );
-          })}
+          {/* Booking Strategy */}
+          <div className="lg:col-span-7 lg:sticky lg:top-24 space-y-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="bg-[#1f3255] text-white w-8 h-8 rounded-full flex items-center justify-center font-black shadow-lg shadow-[#1f3255]/20">2</div>
+              <div>
+                <h2 className="text-left text-2xl font-bold text-[#1f3255] leading-none">When to book?</h2>
+                <p className="text-[14px] text-slate-400 font-bold uppercase mt-1">Optimize date & lead time</p>
+              </div>
+            </div>
+            <BookingStrategy 
+              country={inputData.nationality} 
+              companion={inputData.companion} 
+            />
+          </div>
         </div>
       </div>
     </div>

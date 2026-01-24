@@ -37,6 +37,7 @@ class MonthlyClimatePriceInfo(BaseModel):
     
 class BookingStrategyInfo(BaseModel):
     arrival_date: str
+    leave_date: str
     is_flexible_year: bool
     companion: Companion
     country_name: str
@@ -70,22 +71,5 @@ async def get_booking_strategy(user_input: BookingStrategyInfo):
     
     except FileNotFoundError:
         raise HTTPException(status_code=500, detail="Missing models")
-    except Exception as e:
-        raise e
-
-@router.post("/get_monthly_climate_price")
-async def get_monthly_climate_price(rec_city: MonthlyClimatePriceInfo):
-    try:
-        chart_data = visualization_service.plot_monthly_climate_price(rec_city)
-        
-        return {
-            "status": "success",
-            "data": {
-                "chart": chart_data
-            }
-        }
-    
-    except FileNotFoundError:
-        raise HTTPException(status_code=500, detail="Missing relative files")
     except Exception as e:
         raise e
