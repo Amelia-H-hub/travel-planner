@@ -73,20 +73,3 @@ async def get_booking_strategy(user_input: BookingStrategyInfo):
         raise HTTPException(status_code=500, detail="Missing models")
     except Exception as e:
         raise e
-
-@router.post("/get_monthly_climate_price")
-async def get_monthly_climate_price(rec_city: MonthlyClimatePriceInfo):
-    try:
-        chart_data = visualization_service.plot_monthly_climate_price(rec_city)
-        
-        return {
-            "status": "success",
-            "data": {
-                "chart": chart_data
-            }
-        }
-    
-    except FileNotFoundError:
-        raise HTTPException(status_code=500, detail="Missing relative files")
-    except Exception as e:
-        raise e

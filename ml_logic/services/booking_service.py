@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import joblib
 import plotly.graph_objects as go
 import plotly.io as pio
@@ -7,7 +6,7 @@ import calendar
 import json
 import requests
 import io
-from ml_logic.config import CANCELLATION_RISK_MODEL_PATH, PRICE_MODEL_PATH, PRICE_LOOKUP_PATH, COUNTRY_MONTHLY_STATS_PATH, BOOKING_FEATURES, LEAD_TIME_CONFIG, IS_LOCAL
+from ml_logic.config import CANCELLATION_RISK_MODEL_PATH, PRICE_MODEL_PATH, COUNTRY_MONTHLY_STATS_PATH, BOOKING_FEATURES, LEAD_TIME_CONFIG, IS_LOCAL
 from ml_logic.processors.data_utils import calculate_lead_time, get_month, determine_customer_type, calculate_stay_distribution
 from ml_logic.processors.geo_tools import get_country_iso_code
 
@@ -16,7 +15,6 @@ class BookingService:
         if IS_LOCAL:
             self.risk_model = joblib.load(CANCELLATION_RISK_MODEL_PATH)
             self.price_model = joblib.load(PRICE_MODEL_PATH)
-            self.price_lookup = pd.read_csv(PRICE_LOOKUP_PATH)
             
         else:
             print("Running in production, loading models from Hugging Face...")
@@ -24,7 +22,6 @@ class BookingService:
             self.risk_model = joblib.load(io.BytesIO(risk_resp.content))
             price_resp = requests.get(PRICE_MODEL_PATH)
             self.price_model = joblib.load(io.BytesIO(price_resp.content))
-            self.price_lookup = pd.read_csv(PRICE_LOOKUP_PATH)
         
         self.lt_map = LEAD_TIME_CONFIG
         self.lt_steps = sorted(LEAD_TIME_CONFIG.values())
@@ -45,25 +42,6 @@ class BookingService:
         
         test_lts.append(user_lt)
         return sorted(list(set(test_lts)))
-    
-    def get_interpolated_price(self, country, month, lt):
-        city_prices = self.price_lookup[
-            (self.price_lookup['country'] == country) &
-            (self.price_lookup['arrival_date_month_num'] == month)
-        ].copy()
-        
-        if city_prices.empty: return 100
-        
-        city_prices['lt_days'] = city_prices['lead_time_bucket'].map(self.lt_map)
-        city_prices = city_prices.sort_values('lt_days')
-        
-        estimated_price = np.interp(
-            lt,
-            city_prices['lt_days'].values,
-            city_prices['adr'].values
-        )
-        
-        return estimated_price
     
     def _get_weeks_in_month(self, year, month):
         month_days = pd.date_range(start=f"{year}-{month}-01", periods=pd.Period(f"{year}-{month}").days_in_month)
@@ -336,132 +314,6 @@ class VisualService:
         self.country_monthly_stats = self.country_monthly_stats.rename(
             columns={'arrival_date_month_num': 'month'}
         )
-    
-    def get_climate(self, climate_calendar):
-        if hasattr(climate_calendar, "model_dump"):
-            climate_calendar = climate_calendar.model_dump()
-        
-        rows= []
-        for climate_type, months_list in climate_calendar.items():
-            for item in months_list:
-                if isinstance(item, dict):
-                    m = item.get('month')
-                    t = item.get('temp')
-                else:
-                    m = getattr(item, 'month', None)
-                    t = getattr(item, 'temp', None)
-                
-                rows.append({
-                    'month': m,
-                    'avg_temp': t,
-                    'climate': climate_type
-                })
-        
-        climate_df = pd.DataFrame(rows)
-        climate_df = climate_df.dropna(subset=['month'])
-        return climate_df.sort_values(by='month')
-    
-    def prepare_plot_data(self, rec_city):
-        country_iso = get_country_iso_code(rec_city.country)
-        price_df = self.country_monthly_stats[self.country_monthly_stats['country'] == country_iso]
-        climate_df = self. get_climate(rec_city.climate_calendar)
-        
-        combined_df = pd.merge(price_df, climate_df, on='month', how='right')
-        combined_df['month_name'] = combined_df['month'].apply(lambda x: calendar.month_name[x])
-        combined_df = combined_df.sort_values(by='month')
-        print(combined_df)
-        
-        return combined_df
-    
-    def plot_monthly_climate_price(self, rec_city):
-        plot_data = self.prepare_plot_data(rec_city)
-        
-        fig = go.Figure()
-        
-        bg_palette = {
-            'Cold': 'rgba(147, 197, 253, 0.2)',     # 淺天藍
-            'Cool': 'rgba(148, 163, 184, 0.2)',     # 灰藍色
-            'Pleasant': 'rgba(32, 150, 168, 0.2)', # 湖水綠
-            'Hot': 'rgba(244, 63, 94, 0.2)'       # 西瓜紅
-        }
-        
-        shapes = []
-        for _, row in plot_data.iterrows():
-            m = row['month']
-            c_type = row.get('climate')
-            
-            if pd.notna(c_type) and c_type in bg_palette:
-                shapes.append(dict(
-                    type='rect',
-                    xref='x',
-                    yref='paper',
-                    x0=m - 0.5, x1=m + 0.5,
-                    y0=0, y1=1,
-                    fillcolor=bg_palette[c_type],
-                    layer="below",
-                    line_width=0
-                ))
-        
-        fig.add_trace(go.Scatter(
-            x=plot_data['month'],
-            y=plot_data['avg_adr'],
-            mode='lines+markers',
-            line=dict(
-                color='#1f3255',
-                width=3
-            ),
-            marker=dict(
-                size=10,
-                color='#1f3255',
-                line=dict(
-                    width=2,
-                    color='white'
-                )
-            ),
-            name='Avg Price',
-            showlegend=False,
-            # Define detailed hover information
-            customdata=np.stack((
-                plot_data['month_name'], 
-                plot_data['avg_temp'], 
-                plot_data['max_adr'].fillna(0), 
-                plot_data['min_adr'].fillna(0),
-                plot_data['climate'].fillna("Unknown")
-            ), axis=-1),
-            hovertemplate=(
-                "<b>Month: %{customdata[0]}</b><br>" +
-                "Avg Temp: %{customdata[1]}°C<br>" +
-                "Avg Price: €%{y:.2f}<br>" +
-                "Max Price: €%{customdata[2]:.2f}<br>" +
-                "Min Price: €%{customdata[3]:.2f}<br>" +
-                "<extra></extra>"
-            )
-        ))
-                
-        fig.update_layout(
-            shapes=shapes,
-            title=f"Travel Insights: Hotel Price & Climate in {rec_city.country}",
-            xaxis=dict(
-                title='Month',
-                tickmode='array',
-                tickvals=list(range(1, 13)),
-                ticktext=[calendar.month_abbr[i] for i in range(1, 13)],
-                range=[0.5, 12.5],
-                showgrid=False
-            ),
-            yaxis=dict(
-                title='Average Daily Reate (€)',
-                gridcolor='rgba(0, 0, 0, 0.05)',
-                zeroline=False
-            ),
-            hovermode='closest',
-            plot_bgcolor='rgba(0, 0, 0, 0)',
-            paper_bgcolor='rgba(0, 0, 0, 0)',
-            margin=dict(l=50, r=20, t=30, b=40),
-            showlegend=False
-        )
-        
-        return json.loads(pio.to_json(fig))
     
     def draw_risk_donut(self, cancel_prob: float):
         risk_percent = cancel_prob * 100
