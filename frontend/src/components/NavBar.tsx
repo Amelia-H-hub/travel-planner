@@ -17,6 +17,7 @@ export default function NavBar() {
   // set height of nav bar based on current page
   const heightClass = location.pathname === "/" ? "h-24 md:h-52" : "h-16 md:h-40";
   const pxClass = location.pathname === "/" ? "px-6 md:px-15" : "px-6 md:px-8";
+  const pyClass = location.pathname === "/" ? "py-10 md:py-12" : "py-10";
   const titleFontSize = location.pathname === "/" ? "text-2xl md:text-3xl" : "text-2xl";
   const isWhiteTextPage = ["/", "/inspirationForm"].includes(location.pathname);
   const titleTextColor = isScrolled
@@ -54,7 +55,7 @@ export default function NavBar() {
   return (
     <>
       <nav className={`
-        flex justify-between fixed ${heightClass} w-full ${pxClass} py-10 md:py-12
+        flex justify-between fixed ${heightClass} w-full ${pxClass} ${pyClass}
         top-0 left-0 transition-all duration-300 z-50 items-center
         ${navBg}`
       }>
