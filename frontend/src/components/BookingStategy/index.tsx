@@ -1,9 +1,11 @@
 import Flatpickr from "react-flatpickr";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { API_BASE_URL } from '@/constants';
 import PlotlyChart from "../PlotlyChart";
 import AdviceItem from "./AdviceItem";
 import { AlertTriangle, CheckCircle2, Info } from 'lucide-react';
+import countries from "i18n-iso-countries";
+import { countries as countriesList } from 'countries-list';
 
 interface BookingProp {
   country: string;
@@ -14,20 +16,42 @@ export default function BookingStrategy({
     country,
     companion
   }: BookingProp) {
+  const [rate, setRate] = useState(1); // currency transfer rate
   const [selectedDate, setSelectedDate] = useState<string[]>([]);
   const [isFlexibleYear, setIsFlexibleYear] = useState(false);
   const [isLoadingAdvice, setIsLoadingAdvice] = useState(false);
   const [analysisData, setAnalysisData] = useState<any>(null);
 
   const flatpickrOptions = useMemo(() => ({
-    mode: "range" as const, // 強制指定類型為 "range"
+    mode: "range" as const,
     dateFormat: "Y-m-d",
     closeOnSelect: false,
-    // 可以在這裡加入更多邏輯，例如禁止選過去的日期
     minDate: "today",
     conjunction: " to "
   }), []);
 
+  // Tranfer country name to ISO alpha-2
+  const countryCode = useMemo(() =>  countries.getAlpha2Code(country, "en"), [country]);
+  // Get currency
+  const currencyCode = useMemo(() => {
+    const info = countriesList[countryCode as keyof typeof countriesList];
+    return info?.currency[0] || 'EUR';
+  }, [countryCode]);
+
+  useEffect(() => {
+    if (currencyCode === 'EUR') {
+      setRate(1);
+      return;
+    }
+    
+    fetch(`https://open.er-api.com/v6/latest/EUR`)
+      .then(res => res.json())
+      .then(data => {
+        setRate(data.rates[currencyCode] || 1);
+      })
+      .catch(() => setRate(1));
+  }, [currencyCode]);
+  
   // AI insight config
   const insightConfig = {
     success: {
@@ -48,6 +72,19 @@ export default function BookingStrategy({
       borderColor: "border-blue-100",
       textColor: "text-blue-800"
     }
+  };
+
+  // Transfer price based on currency
+  const formatPrice = (priceInEur: number) => {
+    const noDecimalCurrencies = ['TWD', 'JPY', 'KRW'];
+    const isNoDecimal = noDecimalCurrencies.includes(currencyCode);
+
+    return new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency: currencyCode,
+      minimumFractionDigits: isNoDecimal ? 0 : 2,
+      maximumFractionDigits: isNoDecimal ? 0 : 2,
+    }).format(priceInEur * rate);
   };
 
   // Get hotel booking advices
@@ -130,7 +167,7 @@ export default function BookingStrategy({
           </div>
         </div>
 
-        {/* 第二行：全寬按鈕 (Action) */}
+        {/* Analyze button */}
         <button 
           onClick={handleGetAdvice}
           disabled={isLoadingAdvice || selectedDate.length < 2}
@@ -165,7 +202,7 @@ export default function BookingStrategy({
             </div>
             <div className="bg-[#e6f6f4] rounded-3xl p-6 flex flex-col justify-center items-center">
               <span className="text-[13px] font-bold text-[#2096a8]/60 uppercase mb-2">Estimated ADR</span>
-              <div className="text-5xl font-black text-[#1f3255]">€{analysisData.current_adr}</div>
+              <div className="text-4xl font-black text-[#1f3255]">{formatPrice(analysisData.current_adr)}</div>
               <div className="text-[13px] mt-2 text-[#2096a8] font-bold">Avg. Daily Rate</div>
             </div>
           </div>
@@ -200,7 +237,7 @@ export default function BookingStrategy({
           </div>
 
           {/* 3. Advices 1x3 */}
-          <AdviceItem advices={analysisData.recommendations}/>
+          <AdviceItem advices={analysisData.recommendations} formatPrice={formatPrice}/>
         </div>
       )}
     </div>

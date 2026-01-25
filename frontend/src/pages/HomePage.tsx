@@ -140,7 +140,10 @@ export default function HomePage() {
                 </Controller>
               </div>
               <div className="flex justify-end mt-8">
-                <button type="submit" className="group bg-[#2096a8]! hover:bg-[#1a7a8a] text-white px-10 py-4 rounded-full text-xl font-bold transition-all shadow-lg flex items-center gap-3 w-full md:w-auto justify-center">
+                <button 
+                  type="submit" 
+                  disabled={true} 
+                  className="group bg-[#2096a8]! hover:bg-[#1a7a8a] text-white px-10 py-4 rounded-full text-xl font-bold transition-all shadow-lg flex items-center gap-3 w-full md:w-auto justify-center disabled:opacity-50 disabled:grayscale">
                   Get Recommendation
                   <ArrowBigRightDash className='pl-2 w-10 group-hover:translate-x-2 transition-transform'/>
                 </button>
