@@ -16,9 +16,10 @@ interface AdviceProp {
     month_priority?: AdviceData;
     lt_priority?: AdviceData;
   };
+  formatPrice: any
 }
 
-export default function AdviceItem({advices}: AdviceProp) {
+export default function AdviceItem({advices, formatPrice}: AdviceProp) {
 
   const config = {
     best_cp: {
@@ -103,7 +104,7 @@ export default function AdviceItem({advices}: AdviceProp) {
 
                   <div className="text-right">
                     <p className="text-[#2096a8] font-black text-3xl leading-none">
-                      €{Math.round(data.price)}
+                      {formatPrice(Math.round(data.price))}
                     </p>
                     <p className="text-[13px] text-slate-400 font-bold uppercase mt-1">Est. Avg Price</p>
                   </div>
