@@ -167,7 +167,7 @@ export default function BookingStrategy({
           </div>
         </div>
 
-        {/* 第二行：全寬按鈕 (Action) */}
+        {/* Analyze button */}
         <button 
           onClick={handleGetAdvice}
           disabled={isLoadingAdvice || selectedDate.length < 2}
