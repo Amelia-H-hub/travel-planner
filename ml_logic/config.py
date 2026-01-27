@@ -92,7 +92,7 @@ CLIMATE_MODES = {
 
 # Features used in cancellation risk predict model
 BOOKING_FEATURES = [
-    'lead_time', 'arrival_date_month_num', 'arrival_date_week_number', 'stays_in_weekend_nights', 'stays_in_week_nights', 
+    'hotel', 'lead_time', 'arrival_date_month_num', 'arrival_date_week_number', 'stays_in_weekend_nights', 'stays_in_week_nights', 
     'adults', 'children', 'babies', 
     'country', 'market_segment', 'deposit_type', 'customer_type',
     'required_car_parking_spaces', 'total_of_special_requests'

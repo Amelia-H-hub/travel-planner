@@ -244,19 +244,19 @@ class BookingService:
         if diff_ratio < -0.15:
             return {
                 "status": "success",
-                "message": f"{context}, this is a Great Value! The predicted rate is {diff_pct}% lower than the historical average. It’s an excellent time to secure your booking."
+                "message": f"{context}, this is a **Great Value**! The predicted rate is **{diff_pct}% lower** than the historical average. It’s an excellent time to secure your booking."
             }
         
         elif diff_ratio > 0.15:
             return {
                 "status": "warning",
-                "message": f"{context}, the estimated price is {diff_pct}% higher than average. This may be due to peak demand or your specific group size. Consider adjusting your dates for better rates."
+                "message": f"{context}, the estimated price is **{diff_pct}% higher** than average. This may be due to peak demand or your specific group size. Consider adjusting your dates for better rates."
             }
         
         else:
             return {
                 "status": "info",
-                "message": f"The price is within a reasonable range. Our AI prediction is consistent with typical market rates {context.lower()}."
+                "message": f"The price is within a **reasonable range**. Our AI prediction is consistent with typical market rates {context.lower()}."
             }
     
     def get_hotel_booking_strategy(self, user_input):

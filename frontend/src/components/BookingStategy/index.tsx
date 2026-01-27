@@ -3,7 +3,7 @@ import { useState, useMemo, useEffect } from "react";
 import { API_BASE_URL } from '@/constants';
 import PlotlyChart from "../PlotlyChart";
 import AdviceItem from "./AdviceItem";
-import { AlertTriangle, CheckCircle2, Info } from 'lucide-react';
+import { Building2, Palmtree, Rocket, AlertTriangle, CheckCircle2, Info } from 'lucide-react';
 import countries from "i18n-iso-countries";
 import { countries as countriesList } from 'countries-list';
 
@@ -17,6 +17,7 @@ export default function BookingStrategy({
     companion
   }: BookingProp) {
   const [rate, setRate] = useState(1); // currency transfer rate
+  const [hotelType, setHotelType] = useState("City Hotel");
   const [selectedDate, setSelectedDate] = useState<string[]>([]);
   const [isFlexibleYear, setIsFlexibleYear] = useState(false);
   const [isLoadingAdvice, setIsLoadingAdvice] = useState(false);
@@ -58,19 +59,22 @@ export default function BookingStrategy({
       icon: <CheckCircle2 className="w-5 h-5 text-emerald-500" />,
       bgColor: "bg-emerald-50",
       borderColor: "border-emerald-100",
-      textColor: "text-emerald-800"
+      textColor: "text-emerald-800",
+      highlightColor: "text-emerald-900"
     },
     warning: {
       icon: <AlertTriangle className="w-5 h-5 text-amber-500" />,
       bgColor: "bg-amber-50",
       borderColor: "border-amber-100",
-      textColor: "text-amber-800"
+      textColor: "text-amber-800",
+      highlightColor: "text-amber-950"
     },
     info: {
       icon: <Info className="w-5 h-5 text-blue-500" />,
       bgColor: "bg-blue-50",
       borderColor: "border-blue-100",
-      textColor: "text-blue-800"
+      textColor: "text-blue-800",
+      highlightColor: "text-blue-950"
     }
   };
 
@@ -87,6 +91,27 @@ export default function BookingStrategy({
     }).format(priceInEur * rate);
   };
 
+  // render markdown format
+  const renderMessage = (text: string, status: string) => {
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    const config = insightConfig[status as keyof typeof insightConfig];
+    const highlightClass = config?.highlightColor || "text-slate-900"
+
+    return parts.map((part, index) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return (
+          <strong 
+            key={index} 
+            className={`font-black ${highlightClass} underline decoration-2 decoration-current/15 underline-offset-2`}
+          >
+            {part.slice(2, -2)}
+          </strong>
+        );
+      }
+      return part;
+    });
+  };
+
   // Get hotel booking advices
   const handleGetAdvice = async () => {
     if (selectedDate.length < 2) return alert("Please select both arrival and leave dates!");
@@ -94,6 +119,7 @@ export default function BookingStrategy({
     setIsLoadingAdvice(true);
     try {
       const req = {
+        hotel: hotelType,
         arrival_date: selectedDate[0],
         leave_date: selectedDate[1],
         is_flexible_year: isFlexibleYear,
@@ -125,43 +151,80 @@ export default function BookingStrategy({
         </div>
       </div>
 
-      {/* Input 區 */}
-      <div className="bg-slate-50 p-6 rounded-[32px] space-y-4">
-        {/* 第一行：輸入參數區 */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-          {/* 日期選擇 (Where) */}
-          <div className="md:col-span-3 space-y-2">
+      {/* Inputs */}
+      <div className="bg-slate-50 p-6 rounded-[32px] space-y-6">
+        {/* Hotel Type Selection */}
+        <div className="space-y-3">
+          <div className="flex flex-col ml-1">
+            <label className="text-[16px] font-black text-[#2096a8] uppercase tracking-wider">
+              Accommodation Style
+            </label>
+            <span className="text-[13px] text-slate-400">Choose your preferred stay for better AI accuracy</span>
+          </div>
+          
+          <div className="grid grid-cols-2 bg-slate-200/50 p-1.5 rounded-2xl gap-2">
+            <button 
+              onClick={() => setHotelType("City Hotel")}
+              className={`flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all ${
+                hotelType === "City Hotel" 
+                ? "bg-white text-[#1f3255] shadow-sm scale-[1.02]" 
+                : "text-slate-400 hover:text-slate-500"
+              }`}
+            >
+              <Building2 className={`w-5 h-5 ${hotelType === "City Hotel" ? "text-[#2096a8]" : "text-slate-400"}`} />
+              <div className="flex flex-col items-start">
+                <span className="text-[14px] leading-tight">Urban Stay</span>
+                <span className="text-[12px] opacity-60 font-medium">Business & Sightseeing</span>
+              </div>
+            </button>
+            
+            <button 
+              onClick={() => setHotelType("Resort Hotel")}
+              className={`flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all ${
+                hotelType === "Resort Hotel" 
+                ? "bg-white text-[#1f3255] shadow-sm scale-[1.02]" 
+                : "text-slate-400 hover:text-slate-500"
+              }`}
+            >
+              <Palmtree className={`w-5 h-5 ${hotelType === "Resort Hotel" ? "text-[#2096a8]" : "text-slate-400"}`} />
+              <div className="flex flex-col items-start">
+                <span className="text-[14px] leading-tight">Holiday Resort</span>
+                <span className="text-[12px] opacity-60 font-medium">Leisure & Vacation</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* Date selection */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+          {/* Stay Duration */}
+          <div className="space-y-2">
             <label className="text-[14px] font-black text-[#2096a8] uppercase tracking-wider ml-1">
               Stay Duration
             </label>
             <Flatpickr 
-              id="dateRange"
               value={selectedDate} 
               options={flatpickrOptions}
-              onChange={(_, dateStr) => {
-                const dateArray = dateStr ? dateStr.split(" to ") : [];
-                setSelectedDate(dateArray);
-              }
-              }
+              onChange={(_, dateStr) => setSelectedDate(dateStr ? dateStr.split(" to ") : [])}
               placeholder="Select Dates"
               className="w-full bg-white border-2 border-transparent focus:border-[#2096a8]/20 rounded-2xl p-4 text-md text-[#1f3255] font-bold shadow-sm outline-none transition-all"
             />
           </div>
 
-          {/* Flexible checkbox */}
-          <div className="md:col-span-2 space-y-2">
-            <label className="flex items-center gap-3 bg-transparent h-[58px] px-4 rounded-2xl cursor-pointertransition-colors">
+          {/* Flexible Checkbox */}
+          <div className="flex items-center h-[62px]">
+            <label className="flex items-center gap-3 bg-white/50 border border-slate-200 w-full h-full px-4 rounded-2xl cursor-pointer hover:bg-white transition-all shadow-sm">
               <div className="relative flex items-center">
                 <input
                   type="checkbox" 
+                  className="w-5 h-5 rounded-md border-slate-300 text-[#2096a8] focus:ring-[#2096a8]"
                   checked={isFlexibleYear} 
                   onChange={e => setIsFlexibleYear(e.target.checked)}
                 />
-                {isFlexibleYear && <span className="absolute inset-0 flex items-center justify-center text-white text-[10px]">✓</span>}
               </div>
               <div className="flex flex-col">
-                <span className="text-left text-[16px] font-bold text-[#1f3255]">Flexible Year</span>
-                <span className="text-[12px] text-slate-400 leading-none">Global price comparison</span>
+                <span className="text-[15px] font-bold text-[#1f3255]">Flexible Year</span>
+                <span className="text-[11px] text-slate-400 leading-none">Compare prices across 2026</span>
               </div>
             </label>
           </div>
@@ -172,18 +235,19 @@ export default function BookingStrategy({
           onClick={handleGetAdvice}
           disabled={isLoadingAdvice || selectedDate.length < 2}
           className="w-full bg-[#1f3255] text-white py-4 rounded-2xl font-black text-lg 
-                    hover:bg-[#2a4372] transition-all transform active:scale-[0.99]
-                    disabled:opacity-20 disabled:grayscale flex items-center justify-center gap-3 shadow-lg shadow-[#1f3255]/10"
+                    hover:bg-[#2a4372] hover:shadow-xl hover:shadow-[#1f3255]/20 
+                    transition-all transform active:scale-[0.98]
+                    disabled:opacity-30 disabled:grayscale flex items-center justify-center gap-3"
         >
           {isLoadingAdvice ? (
             <>
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span>Calculating Strategy...</span>
+              <span>Syncing with AI Models...</span>
             </>
           ) : (
             <>
               <span>Generate AI Strategy</span>
-              <span className="text-xl">🚀</span>
+              <Rocket className="w-5 h-5 group-hover:animate-pulse" />
             </>
           )}
         </button>
@@ -221,7 +285,7 @@ export default function BookingStrategy({
                 <p className={`text-[16px] font-semibold leading-relaxed ${
                   insightConfig[analysisData.current_insight.status as keyof typeof insightConfig]?.textColor || 'text-slate-700'
                 }`}>
-                  {analysisData.current_insight.message}
+                  {renderMessage(analysisData.current_insight.message, analysisData.current_insight.status)}
                 </p>
               </div>
             </div>
