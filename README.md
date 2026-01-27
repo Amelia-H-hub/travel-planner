@@ -1,58 +1,75 @@
-# React + TypeScript + Vite
+# 🏨 Smart Booking Strategy AI
+### *Elevating Travel Planning with Machine Learning & Behavioral Insights*
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![LightGBM](https://img.shields.io/badge/LightGBM-FFB900?style=for-the-badge&logo=microsoft&logoColor=white)](https://lightgbm.readthedocs.io/)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-Currently, two official plugins are available:
+## 🌟 Overview
+This project is an **AI-driven booking consultancy tool** designed to solve the uncertainty of hotel pricing. Unlike traditional search engines, it analyzes historical booking demand and traveler behavior to provide personalized booking strategies. 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+By leveraging a **LightGBM Regressor**, the system predicts Average Daily Rates (ADR) and provides actionable insights based on the user's nationality, stay duration, and accommodation style.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 Key Features
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+* **AI Price Prediction:** Real-time ADR (Average Daily Rate) estimation using a model trained on over 100k+ booking records.
+* **Market-Specific Calibration:** Automatically adjusts EU-based hotel benchmarks to local market price indices (e.g., TW, JP, US) for realistic estimations.
+* **Dynamic Insight Engine:** * **Contextual Feedback:** Highlights "**Great Value**" or "**Peak Demand**" periods with Markdown-styled emphasis.
+    * **Behavioral Analysis:** Adapts advice based on whether you are staying in an **Urban City Hotel** or a **Holiday Resort**.
+* **Global Accessibility:** Supports multi-currency conversion and international date-range selection with localized `Intl.NumberFormat` formatting.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🧠 The AI Model
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+The core brain is a **LightGBM Gradient Boosting Model** optimized for hospitality data.
 
+* **Features:** Hotel Type, Market Segment, Lead Time, Nationality, and Customer Type.
+* **Preprocessing:** Utilizes a custom `ColumnTransformer` with `OneHotEncoder` and `OrdinalEncoder` for robust categorical data handling.
+* **Cross-Regional Logic:** While trained on European datasets, the model focuses on **universal booking patterns** (e.g., lead time tendencies of specific nationalities) to provide global relevance.
 
-# Data Source
-- City: cities15000.txt from GeoNames
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Framework:** React 18 + Vite
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS (Modern UI with customized Lucide icons)
+- **Data Viz:** Plotly.js for interactive price trend analysis
+
+### Backend & AI (Hugging Face)
+- **Engine:** Python / FastAPI
+- **Model:** LightGBM (Gradient Boosting)
+- **Deployment:** Hosted on Hugging Face Spaces
+
+---
+
+## 📊 Data Source
+- **Hotel Dataset:** Historical booking demand from Resort and City hotels (119,390 observations).
+- **Geodata:** `cities15000.txt` from [GeoNames](http://www.geonames.org/) for precise nationality-based market analysis.
+
+---
+
+## 🔧 Getting Started
+
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/Amelia-H-hub/travel-planner.git
+   ```
+
+2. **Install Dependencies**
+  ```bash
+  npm install
+  ```
+
+3. **Run Development Server**
+  ```bash
+  npm run dev
+  ```
+
+## 💡 Note on AI Insights
+The AI insights use contextual highlighting to emphasize key metrics. Predictions are calibrated with a Global Market Factor to ensure the ADR feels intuitive regardless of the user's current region.
