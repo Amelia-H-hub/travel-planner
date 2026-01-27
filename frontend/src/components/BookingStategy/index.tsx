@@ -3,7 +3,7 @@ import { useState, useMemo, useEffect } from "react";
 import { API_BASE_URL } from '@/constants';
 import PlotlyChart from "../PlotlyChart";
 import AdviceItem from "./AdviceItem";
-import { Building2, Palmtree, Calendar, Rocket, AlertTriangle, CheckCircle2, Info } from 'lucide-react';
+import { Building2, Palmtree, Rocket, AlertTriangle, CheckCircle2, Info } from 'lucide-react';
 import countries from "i18n-iso-countries";
 import { countries as countriesList } from 'countries-list';
 
