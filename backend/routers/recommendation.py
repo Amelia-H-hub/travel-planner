@@ -36,6 +36,7 @@ class MonthlyClimatePriceInfo(BaseModel):
     climate_calendar: Dict[str, List[ClimateDetail]]
     
 class BookingStrategyInfo(BaseModel):
+    hotel: str
     arrival_date: str
     leave_date: str
     is_flexible_year: bool
