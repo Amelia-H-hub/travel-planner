@@ -28,77 +28,65 @@ class BookingService:
         self.visual_service = VisualService()
     
     def get_test_lts(self, user_lt, is_flexible_year=False):
-        if user_lt <= 30: step = 1
-        elif user_lt <= 90: step = 3
-        elif user_lt <= 180: step = 7
-        elif user_lt <= 365: step = 14
-        else: step = 28
-        
-        test_lts = list(range(1, user_lt + 1, step))
-        
+        test_lts = set()
+
+        test_lts.update(range(1, 31, 1))
+        test_lts.update(range(31, 91, 3))
+        test_lts.update(range(91, 181, 7))
+        test_lts.update(range(181, 366, 14))
         if is_flexible_year:
-            future_lts = list(range(user_lt + 28, user_lt + 366, 28))
-            test_lts.extend(future_lts)
+            test_lts.update(range(366, 731, 28))
         
-        test_lts.append(user_lt)
-        return sorted(list(set(test_lts)))
+        test_lts.add(user_lt)
+        
+        return sorted([lt for lt in test_lts if lt > 0])
     
     def _get_weeks_in_month(self, year, month):
         month_days = pd.date_range(start=f"{year}-{month}-01", periods=pd.Period(f"{year}-{month}").days_in_month)
         return sorted(list(set([d.isocalendar().week for d in month_days])))
     
     def get_complete_risk_price_report(self, input_data, is_flexible_year=False):
-        now = pd.Timestamp.now()
+        now = pd.Timestamp.now().normalize()
         
-        # test lead time
         user_lt = int(input_data['lead_time'].iloc[0])
+        
         test_lts = self.get_test_lts(user_lt, is_flexible_year)
         
-        # test arrival month
-        user_month = input_data['arrival_date_month_num'].iloc[0]
-        test_months = range(1, 13)
-        
         results = []
-        for m in test_months:            
-            lts_to_check = test_lts if m == user_month else self.lt_steps
+        for lt in test_lts:
+            # 1. Calculate the simulated arrival date based on lead time
+            simulated_arrival = now + pd.Timedelta(days=lt)
             
-            for lt in lts_to_check:
-                simulated_date = now + pd.Timedelta(days=lt)
-                sim_year = simulated_date.year
-                
-                test_weeks = self._get_weeks_in_month(sim_year, m)
-                
-                for w in test_weeks:
-                    # Exclude the date before today
-                    try:
-                        check_date = pd.to_datetime(f'{sim_year}-W{w}-1', format='%G-W%V-%u')
-                        if check_date <= now:
-                            continue
-                    except:
-                        pass
-                    
-                    temp_df = input_data.copy()
-                    temp_df['arrival_date_month_num'] = m
-                    temp_df['arrival_date_week_number'] = w
-                    temp_df['lead_time'] = lt
-                    
-                    # Predict risk
-                    prob = self.risk_model.predict_proba(temp_df)[0][1]
-                    
-                    # Calculate price
-                    price = self.price_model.predict(temp_df)[0]
-                    
-                    results.append({
-                        'year': sim_year,
-                        'month': m,
-                        'week_number': w,
-                        'lt': lt,
-                        'risk': prob,
-                        'price': price
-                    })
+            sim_year = simulated_arrival.year
+            sim_month = simulated_arrival.month
+            sim_week = simulated_arrival.isocalendar().week
+            
+            if not is_flexible_year and lt > 365:
+                continue
+
+            temp_df = input_data.copy()
+            temp_df['arrival_date_month_num'] = sim_month
+            temp_df['arrival_date_week_number'] = sim_week
+            temp_df['lead_time'] = lt
+            
+            # Predict risk and price
+            prob = self.risk_model.predict_proba(temp_df)[0][1]
+            price = self.price_model.predict(temp_df)[0]
+            
+            results.append({
+                'year': sim_year,
+                'month': sim_month,
+                'week_number': sim_week,
+                'lt': lt,
+                'risk': prob,
+                'price': price
+            })
         
         res_df = pd.DataFrame(results)
         
+        if res_df.empty:
+            return pd.DataFrame(columns=['year', 'month', 'week_number', 'lt', 'risk', 'price'])
+            
         return res_df
     
     def get_advice_by_weight(self, candidates, weight_risk, weight_price):
@@ -117,12 +105,18 @@ class BookingService:
         
         advice_data = advice.to_dict() if hasattr(advice, 'to_dict') else advice
         year = int(advice_data['year'])
+        month = int(advice_data['month'])
         week = int(advice_data['week_number'])
         start_of_week = pd.to_datetime(f'{year}-W{week}-1', format='%G-W%V-%u')
         total_nights = target_weekend + target_week
         
+        best_match = None
+        
         for i in range(7):
             candidate_start = start_of_week + pd.Timedelta(days=i)
+            
+            if candidate_start.month != month:
+                continue
             
             stay_range = pd.date_range(start=candidate_start, periods=total_nights)
             
@@ -138,7 +132,17 @@ class BookingService:
                 }
         
         # Fallback: If cannot match, return Friday of the week as start date
-        fallback_start = start_of_week + pd.Timedelta(days=4)
+        for i in range(7):
+            fallback_start = start_of_week + pd.Timedelta(days=i)
+            if fallback_start.month == month:
+                stay_range = pd.date_range(start=fallback_start, periods=total_nights)
+                return {
+                    **advice_data,
+                    "check_in": fallback_start.strftime('%Y-%m-%d'),
+                    "check_out": (stay_range[-1] + pd.Timedelta(days=1)).strftime('%Y-%m-%d'),
+                    "stay_dates": [] 
+                }
+        
         return {
             **advice_data,
             "check_in": fallback_start.strftime('%Y-%m-%d'),
@@ -192,17 +196,14 @@ class BookingService:
         )
         
         # 3. Same or longer lead time
-        future_months = [(int(user_month) + i - 1) % 12 + 1 for i in range(1, 4)]
-        lt_candidates = res_df[
-            (res_df['month'].isin(future_months)) &
-            (res_df['lt'] > user_lt)
-        ].copy()
+        future_months = [(int(user_month) + i - 1) % 12 + 1 for i in range(0, 3)]
+        lt_candidates = res_df[(res_df['month'].isin(future_months))].copy()
         
-        if cp_advice is not None:
-            lt_candidates = lt_candidates[
-                ~((lt_candidates['month'] == cp_advice['month']) &
-                  (lt_candidates['lt'] == cp_advice['lt']))
-            ]
+        # if cp_advice is not None:
+        #     lt_candidates = lt_candidates[
+        #         ~((lt_candidates['month'] == cp_advice['month']) &
+        #           (lt_candidates['lt'] == cp_advice['lt']))
+        #     ]
         
         lt_advice = self.get_advice_by_weight(lt_candidates, w_risk, w_price)
         lt_advice = self._get_date_match_from_week(
