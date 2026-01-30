@@ -24,23 +24,26 @@ export default function AdviceItem({advices, formatPrice}: AdviceProp) {
   const config = {
     best_cp: {
       label: "Best Value",
-      color: "bg-[#2096a8]!",
+      bgColor: "bg-[#f59e0b]!",
+      textColor: "text-[#f59e0b]!",
       icon: "💎",
-      sub: "Absolute lowest price across 12 months",
+      sub: "The optimal balance between cost and booking stability.",
       timeframe: "Yearly Best"
     },
     month_priority: {
       label: "Stay in your Month",
-      color: "bg-[#f43f5e]!",
+      bgColor: "bg-[#2096a8]!",
+      textColor: "text-[#2096a8]!",
       icon: "🌟",
       sub: "Optimized for your chosen month",
       timeframe: "Specific Month"
     },
     lt_priority: {
       label: "The Patient Saver",
-      color: "bg-[#1f3255]!",
+      bgColor: "bg-[#1f3255]!",
+      textColor: "text-[#1f3255]!",
       icon: "⏰",
-      sub: "Wait 1-4 months for major savings",
+      sub: "Wait 1-3 months for major savings",
       timeframe: "Nearby Alternative"
     },
   };
@@ -79,9 +82,26 @@ export default function AdviceItem({advices, formatPrice}: AdviceProp) {
                 {keys.map(key => {
                   const cfg = config[key as keyof typeof config];
                   return (
-                    <div key={key} className={`flex items-center gap-1.5 text-white text-[10px] font-black px-2.5 py-1.5 rounded-full ${cfg.color} shadow-md`}>
+                    <div key={key} className={`flex items-center gap-1.5 text-white text-[12px] font-black px-2.5 py-1.5 rounded-full ${cfg.bgColor} shadow-md`}>
                       <span>{cfg.icon}</span>
                       <span className="whitespace-nowrap uppercase tracking-tighter">{cfg.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Strategy Info Section */}
+              <div className="flex flex-col mb-4 gap-0.5">
+                {keys.map((key) => {
+                  const cfg = config[key as keyof typeof config];
+                  return (
+                    <div key={key} className="flex items-center gap-2">
+                      <span className={`text-[12px] font-black ${cfg.textColor} uppercase px-1.5`}>
+                        {cfg.timeframe}
+                      </span>
+                      <span className="text-[12px] font-medium text-slate-400">
+                        {cfg.sub}
+                      </span>
                     </div>
                   );
                 })}

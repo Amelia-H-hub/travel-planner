@@ -1,5 +1,6 @@
 import countries from "i18n-iso-countries";
 import enLocale from "i18n-iso-countries/langs/en.json";
+import { useEffect, useRef, useState } from "react";
 
 countries.registerLocale(enLocale);
 
@@ -31,13 +32,28 @@ interface CityCardProps {
 export default function CityCard({
   cityObj
 }: CityCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+  const textRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (textRef.current) {
+        const isOverflowing = textRef.current.scrollHeight > textRef.current.clientHeight;
+        setShowButton(isOverflowing);
+      }
+    };
+
+    checkOverflow();
+    window.addEventListener('resize', checkOverflow);
+    return () => window.removeEventListener('resize', checkOverflow);
+  }, [cityObj.short_description]);
+
   return (
     <div className="w-full bg-white/80! backdrop-blur-md border border-white rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(31,50,85,0.1)] transition-all duration-300 hover:shadow-[0_20px_60px_rgba(31,50,85,0.15)] mb-6">
-      
-      {/* 橫式主體區 */}
       <div className="flex flex-col">
         
-        {/* 左側：城市照片或大標題區 (可根據需求加入圖片) */}
+        {/* City Basic Info */}
         <div className="w-full p-8 justify-center border-b lg:border-b-0 lg:border-r border-slate-100">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
@@ -53,10 +69,30 @@ export default function CityCard({
               <span className={`fi fi-${countries.getAlpha2Code(cityObj.country, "en")?.toLowerCase()} rounded-sm shadow-sm`}></span>
             </p>
           </div>
-          <p className="text-slate-600 mt-4 italic line-clamp-3">"{cityObj.short_description}"</p>
+          <div className="mt-4 relative">
+            <p 
+              ref={textRef}
+              className={`text-slate-600 italic transition-all duration-500 ${isExpanded ? "" : "line-clamp-3"}`}
+            >
+              "{cityObj.short_description}"
+            </p>
+            
+            {showButton && (
+              <button 
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="mt-2 text-[#2096a8] text-xs font-bold uppercase tracking-widest hover:text-[#1f3255] transition-colors flex items-center gap-1"
+              >
+                {isExpanded ? (
+                  <>Show Less <span className="text-[10px]">▲</span></>
+                ) : (
+                  <>Read More <span className="text-[10px]">▼</span></>
+                )}
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* 右側：氣候指南與按鈕 */}
+        {/* Climate Guide */}
         <div className="w-full p-8 flex flex-col justify-between space-y-6">
           <div className="space-y-4">
             <div className="flex justify-between items-center">
@@ -73,7 +109,7 @@ export default function CityCard({
               </div>
             </div>
             
-            {/* 月份圖表：橫向拉長更清晰 */}
+            {/* Climate Figure */}
             <div className="flex gap-2 h-10 items-end">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((m) => {
                 const isHot = cityObj.climate_calendar.Hot.some(item => item.month === m);
