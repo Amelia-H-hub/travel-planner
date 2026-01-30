@@ -103,19 +103,20 @@ class BookingService:
     def _get_date_match_from_week(self, advice, target_weekend, target_week):
         if advice is None: return None
         
+        now = pd.Timestamp.now().normalize()
+        
         advice_data = advice.to_dict() if hasattr(advice, 'to_dict') else advice
         year = int(advice_data['year'])
         month = int(advice_data['month'])
         week = int(advice_data['week_number'])
+        
         start_of_week = pd.to_datetime(f'{year}-W{week}-1', format='%G-W%V-%u')
         total_nights = target_weekend + target_week
-        
-        best_match = None
         
         for i in range(7):
             candidate_start = start_of_week + pd.Timedelta(days=i)
             
-            if candidate_start.month != month:
+            if candidate_start < now or candidate_start.month != month:
                 continue
             
             stay_range = pd.date_range(start=candidate_start, periods=total_nights)
@@ -134,7 +135,7 @@ class BookingService:
         # Fallback: If cannot match, return Friday of the week as start date
         for i in range(7):
             fallback_start = start_of_week + pd.Timedelta(days=i)
-            if fallback_start.month == month:
+            if fallback_start >= now and fallback_start.month == month:
                 stay_range = pd.date_range(start=fallback_start, periods=total_nights)
                 return {
                     **advice_data,
