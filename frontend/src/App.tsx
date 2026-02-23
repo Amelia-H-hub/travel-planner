@@ -21,7 +21,7 @@ function App() {
         >
           {/* Children route: It would be rendered at where <Outlet> in <Layout> */}
           <Route 
-            index // index means this is the default route of the parent route
+            path="home" // index means this is the default route of the parent route
             element={<HomePage />}
           />
           <Route 
@@ -33,7 +33,7 @@ function App() {
             element={<EventsRecommendation />}
           />
           <Route 
-            path="inspirationForm"
+            index
             element={<InspirationForm />}
           />
           <Route
